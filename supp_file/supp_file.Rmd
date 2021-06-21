@@ -1,0 +1,62 @@
+---
+title: "Supplemental File"
+author: "Maxwel Coura Oliveira"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	fig.align = "center",
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+```{r message=FALSE, include=FALSE}
+# Packages
+options(scipen = 999)
+library(tidyverse)
+library(kableExtra)
+
+```
+
+
+
+```{r}
+read_csv("bf.csv") %>% 
+  kableExtra::kable(., booktabs = T, longtable = T, 
+                    caption = "Bayes Factor interpretation",
+                    linesep = "") %>%
+  kable_styling(latex_options = c("striped", "repeat_header")) 
+```
+
+
+
+
+```{r echo=FALSE}
+read_csv("inswath_bf.csv") %>% 
+  mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
+  mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 
+  kableExtra::kable(., booktabs = T, longtable = T, 
+                    caption = "Treatment contrasts for inswath spray solution deposition. Bayes Factor is used to test contrast hypothesis",
+                    linesep = "") %>%
+  kable_styling(latex_options = c("striped", "repeat_header")) 
+```
+
+
+
+## AUC Bayes Factor contrasts
+
+```{r echo=FALSE}
+read_csv("auc_bf.csv") %>% 
+  mutate_if(is.double, ~round(., 2)) %>% 
+  mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
+  mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 
+  kableExtra::kable(., booktabs = T, longtable = T, 
+                    caption = "Treatment contrasts for Area Under the Curve. Bayes Factor is used to test contrast hypothesis",
+                    linesep = "") %>%
+  kable_styling(latex_options = c("striped", "repeat_header")) 
+```
