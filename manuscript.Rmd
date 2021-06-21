@@ -1,0 +1,110 @@
+---
+title: "Spray particle drift"
+author: Maxwel C. Oliveira, Guilherme Alves, Greg Kruger and Rodrigo Werle
+date: "`r format(Sys.Date())`"
+documentclass: article
+linestretch: 2
+abstract: "BACKGROUND: "
+papersize: "a4"
+mainfont: Arial
+#monofont: "Arial"
+#monofontoptions: "Scale=0.7"
+fontsize: "12pt"
+geometry:
+  margin = 2.54cm
+csl: pms.csl
+bibliography: biblio.bib
+output:
+  pdf_document: 
+      latex_engine: xelatex
+
+  
+header-includes:
+  - \usepackage[left]{lineno}
+  - \linenumbers
+---
+
+
+```{r include=FALSE}
+library(kableExtra)
+library(tidyverse)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+## Introduction
+
+
+
+## Materials and Methods
+
+Solution, sprayer and nozzle factors were grouped as a single fixed effect (herein treatments) due to missing factor water in Missouri. Resulting in a combination of 12 treatments.
+
+### Statistical analyses
+
+The statistical analyses were conducted with R statistical software version 4.1.0 @LanguageEnvironmentStatistical2021. Data analyses were performed with Bayesian inference with "brms" package @burknerBrmsPackageBayesian2017. Bayesian inference uses Markov chain Monte Carlo algorithms for sampling a probability distribution @burknerBrmsPackageBayesian2017. In addition, Bayesian inference avoid singular fit from frequentist linear models when using complex random effects. 
+
+#### Spray solution deposition at upwind and inswath 
+
+Data was fitted to a mixed model using *brm* function. Treatments were the fixed effects and block nested within location random effects. Model family was gaussian and prior distribution was set to student-t with mean 0.5, standard deviation 3 and 11 degrees of freedom. The posterior summaries (mean and highest posterior density) were estimated with *emmeans* function from "emmeans" package. Treatment means were compared using Bayes Factor (BF) [@leeBayesianCognitiveModeling2014; @kassBayesFactors1995]. In short, if BF > 1 there is evidence for H1 (difference between treatments); whereas, if H0 < 1 there is evidence for H0 (no difference between treatments). If BF = 1, there is no evidence. The level of evidence (anecdotal, moderate, strong, very strong, and extreme) varies as the BF value increase (evidence for H1) or decrease (evidence for H0). 
+
+#### Spray solution deposition at downwind 
+
+Data was fitted to a Bayesian linear mixed model using *brm* function. Spray solution deposition and distance were log-transformed to meet linearity. A single model was fitted to each treatment. For each model, treatments and distance were the fixed effects and block nested within location random effects. Model family was gaussian and prior distribution was set to student-t with mean 0.5, standard deviation 3 and 11 degrees of freedom. For clarification, intercepts, slopes were back-transformed with *exponential* function. Moreover, the linear models fitted were used to predict the distance where no spray particle deposition was detected (0 &eta;L cm^-2^) for each treatment, which was also back-transformed to m scale. 
+
+The area under the curve (AUC) was used to validate the linear models. The spray solution deposition across distances within a experimental unit were used to calculate the absolute AUC value. The AUC was performed with *audps* function from "agricolae" package. The AUC is commonly used for plant disease progress [@meenaAreaDiseaseProgress2011; @simkoAreaDiseaseProgress2011] but has been used to calculate herbicide injury @striegelSpraySolutionPH2021. Data was fitted to a mixed model using *brm* function. Treatments were the fixed effects and block nested within location random effects. Model family was gaussian and prior distribution was set to student-t with mean 0.5, standard deviation 3 and 11 degrees of freedom. The posterior summaries (mean and highest posterior density) were estimated with *emmeans* function from "emmeans" package. Treatment means were compared using Bayes Factor (BF) as above-mentioned.
+
+
+
+## Results
+
+### Spray solution deposition at inswath and upwind
+
+In general, Open sprayer treatments resulted in a more variable spray particle deposition than Hood treatments (Figure 1). The inclusion of either DRA or Water strongly impacted spray particle deposition for Open sprayer treatments, regardless nozzle type. The top and bottom three treatments contained either DRA or Water, respectively. For example, treatment DRA-Open-ULD resulted in the highest spray particle deposition (1318.5  &eta;L cm^-2^, Figure 1). In contrast, 911.2 nL cm^-2^ was the lowest spray solution deposition, which was achieved with Water-Open-ULD treatment. Hood sprayer treatments resulted in a more uniform spray particle deposition. Furthermore, there were less than 0.29 &eta;L cm^-2^ spray deposition at upwind with a strong evidence (BF < 0.25) of no difference between all treatments pairwise contrasts (data not shown). 
+
+
+### Spray solution deposition at downwind
+
+  Treatments with highest intercepts, which is the amount of spray particle deposition near the treated area, were Water-Open-AIXR (15.7 &eta;L cm^-2^), followed by DRA-Open-AIXR (15.7 &eta;L cm^-2^), and Water-Open-ULD (12.0 &eta;L cm^-2^; Figure 2). In contrast, DRA-Hood-TTI, DRA-Hood-ULD and DRA-Hood-AIXR treatments resulted in the lowest intercepts (< 2.0 &eta;L cm^-2^). In addition, there is evidence that treatments with Hood sprayer provided highest decay of spray particle deposition (slopes; Figure 2). The treatments with highest decay were Water-Hood-TTI (-0.50), DRA-Hood-TTI (-0.48), DRA-Hood-ULD (-0.44), Water-Hood-AIXR (-0.43), Water-Hood-ULD (-0.43), and DRA-Hood-AIXR (-0.39).
+
+The predicted distance where no spray particle deposition was detected varied upon treatments (Figure 3A). In general, Open sprayer treatments resulted in spray particle deposition at longest distances. For example, the distance of non-detectable spray particle deposition with Open sprayer treatments varied from 9.9 m (DRA-Open-TTI) to 54.9 m with DRA-Open-AIXR; whereas Hood sprayer treatments varied from 1.4 to 8.2 m with DRA-Hood-TTI and Water-Hood-AIXR, respectively.
+
+Treatments with Hood or Open sprayer strongly impacted on AUC values (Figure 3B). The highest AUC values were Water-Open-AIXR (87.4), followed by Water-Open-ULD (72.9) and DRA-Open-AIXR (72.6). In contrast, DRA-Hood-TTI (13.9), DRA-Hood-ULD (14.3) and Water-Open-AIXR (21.9) resulted in lowest AUC values. The impact of Open and Hood sprayer is demonstrated in treatments including AIXR nozzle. There is a high difference in AUC (50.7) between DRA-Open-AIXR vs DRA-Hood-AIXR (BF > 100). Moreover, addition of DRA did reduced AUC values when comparing within fixed factors, sprayer (Hood and Open) and nozzle (AIXR, TTI and ULD); however, addition of DRA were not statistically different for some contrasts, including DRA-Hood-TTI vs Water-Hood-TTI (BF = 0.91), DRA-Open-TTI vs Water-Open-TTI (BF = 0.55), and DRA-Open-AIXR vs Water-Open-AIXR (BF = 0.93).
+
+
+
+
+## Discussion
+
+### Spray solution deposition at inswath and upwind
+
+
+### Spray solution deposition at downwind
+
+
+
+## Conclusion
+
+## Acknowledgments
+
+## Conflict of Interest Declaration
+
+## Tables (each table complete with title and footnotes)
+
+
+
+## Figure Legends
+
+
+
+
+
+## References
+
