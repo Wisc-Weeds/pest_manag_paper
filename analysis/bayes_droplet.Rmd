@@ -1,0 +1,396 @@
+---
+title: "bayes_droplet"
+author: "Maxwel Coura Oliveira"
+date: "6/11/2021"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(emmeans)
+library(brms)
+library(bayestestR)
+library(modelbased)
+library(ggtext)
+library(patchwork)
+library(ggthemes)
+```
+
+
+```{r}
+readxl::read_excel("droplet_size_data.xlsx") %>% 
+  janitor::clean_names() %>% 
+  mutate(solution = str_replace_all(solution, "Intact", "DRA")) %>% 
+  group_by(solution, nozzle) %>% 
+  mutate(nozzle = str_remove_all(nozzle, '[0-9]+')) %>% 
+  mutate(x200 = x200/100) %>% 
+  mutate(rep = row_number()) -> droplet
+```
+
+
+# dv10
+
+
+```{r eval= FALSE}
+model10 <- brm(`dv10` ~ 1,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+
+model11 <- brm(`dv10` ~ solution,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+
+model12 <- brm(`dv10` ~ solution + nozzle,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+
+model13 <- brm(`dv10` ~ solution * nozzle,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+```
+
+
+
+# dv50
+
+```{r message = FALSE}
+model13 <- brm(`dv10` ~ solution * nozzle,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+               warmup = 1000, iter = 2000, chains = 4,
+               prior = set_prior("student_t(0.5, 1, 2)", class = "b"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+```
+ 
+
+```{r}
+library(bayestestR)
+#bayesfactor_models(model11, model12, model13, denominator = model10)
+# There are extreme evidence for model13 (interaction)
+```
+
+
+```{r}
+droplet %>% 
+  group_by(nozzle, solution) %>% 
+  summarise(mean = mean(`dv10`), median = median(`dv10`))
+```
+
+
+```{r}
+rg <- ref_grid(model13)
+em <- emmeans(rg, ~ nozzle * solution, type = "response")
+summary(em, point.est = mean)
+```
+
+```{r}
+emmeans1 <- emmeans(model13, ~ nozzle * solution, cont="pairwise", type = "response")
+```
+
+
+```{r}
+options(scipen = 999)
+estimate_contrasts(model13, test = "bf") %>% 
+  as_tibble() -> bf_dv10
+write_csv(x = bf_dv10, file = "bf_dv10.csv")
+```
+
+
+# DV 50 
+
+
+```{r}
+model21 <- brm(`dv50` ~ solution,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+               warmup = 1000, iter = 2000, chains = 4,
+               prior = set_prior("student_t(0.5, 1, 2)", class = "b"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+
+model22 <- brm(`dv50` ~ solution + nozzle,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+               warmup = 1000, iter = 2000, chains = 4,
+               prior = set_prior("student_t(0.5, 1, 2)", class = "b"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+
+model23 <- brm(`dv50` ~ solution * nozzle,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+               warmup = 1000, iter = 2000, chains = 4,
+               prior = set_prior("student_t(0.5, 1, 2)", class = "b"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+```
+
+```{r}
+# model comparison
+bayesfactor_models(model22, model23, denominator = model21)
+```
+
+
+```{r}
+rg <- ref_grid(model23)
+em <- emmeans(rg, ~ nozzle * solution, type = "response")
+summary(em, point.est = mean)
+```
+
+```{r}
+emmeans2 <- emmeans(model23, ~ nozzle * solution, cont="pairwise", type = "response")
+```
+
+```{r}
+estimate_contrasts(model23, test = "bf")
+```
+
+```{r}
+options(scipen = 999)
+estimate_contrasts(model23, test = "bf") %>% 
+  as_tibble() -> bf_dv50
+#write_csv(x = bf_dv50, file = "bf_dv50.csv")
+```
+
+
+# DV 90 
+
+```{r}
+model33 <- brm(`dv90` ~ solution * nozzle,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+               warmup = 1000, iter = 2000, chains = 4,
+               prior = set_prior("student_t(0.5, 1, 2)", class = "b"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+```
+
+```{r}
+# model comparison
+#bayesfactor_models(model32, model33, denominator = model31)
+```
+
+
+```{r}
+rg <- ref_grid(model33)
+em <- emmeans(rg, ~ nozzle * solution, type = "response")
+summary(em, point.est = mean)
+```
+
+```{r}
+emmeans3 <- emmeans(model33, ~ nozzle * solution, cont="pairwise", type = "response")
+```
+
+```{r}
+estimate_contrasts(model33, test = "bf")
+```
+
+```{r}
+estimate_contrasts(model33, test = "bf") %>% 
+  as_tibble() -> bf_dv90
+write_csv(x = bf_dv90, file = "bf_dv90.csv")
+```
+
+
+
+# RS
+
+```{r}
+model43 <- brm(rs ~ solution * nozzle,
+                  family = hurdle_gamma(link = "log", 
+                                        link_shape = "log", 
+                                        link_hu = "logit"),
+               warmup = 1000, iter = 2000, chains = 4,
+               prior = set_prior("student_t(0.1, 0.5, 2)", class = "b"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+```
+
+```{r}
+# model comparison
+#bayesfactor_models(model32, model33, denominator = model31)
+```
+
+
+```{r}
+rg <- ref_grid(model43)
+em <- emmeans(rg, ~ nozzle * solution, type = "response")
+summary(em, point.est = mean)
+```
+
+```{r}
+emmeans4 <- emmeans(model43, ~ nozzle * solution, cont= "pairwise", type = "response")
+```
+
+```{r}
+estimate_contrasts(model43, test = "bf")
+```
+
+
+# <200
+
+
+# RS
+
+```{r}
+model53 <- brm(`x200` ~ solution * nozzle,
+                  family = Beta(link = "logit", link_phi = "log"),
+               warmup = 1000, iter = 2000, chains = 4,
+               prior = set_prior("student_t(0.1, 0.5, 2)", class = "b"),
+                  data = droplet, save_pars = save_pars(all = TRUE))
+```
+
+```{r}
+# model comparison
+#bayesfactor_models(model32, model33, denominator = model31)
+```
+
+
+```{r}
+rg <- ref_grid(model53)
+em <- emmeans(rg, ~ nozzle * solution, type = "response")
+summary(em, point.est = mean)
+```
+
+```{r}
+emmeans5 <- emmeans(model53, ~ nozzle * solution, cont= "pairwise", type = "response")
+```
+
+
+```{r}
+emmeans5$emmeans %>% 
+  as_tibble() %>% 
+  unite("trt", c("solution", "nozzle"), sep = " - ") %>% 
+  ggplot(aes(x = fct_reorder(trt, response), y = response*100)) +
+  geom_point() +
+  geom_linerange(aes(ymin = lower.HPD*100, ymax = upper.HPD*100)) +
+  coord_flip() +
+  theme_classic() +
+  labs(title = "<200 droptlet")
+```
+
+
+
+```{r}
+estimate_contrasts(model53, test = "bf")
+```
+
+
+
+```{r}
+emmeans1$emmeans %>% as_tibble() %>% mutate(type = "DV10") -> em1
+emmeans2$emmeans %>% as_tibble() %>% mutate(type = "DV50") -> em2
+emmeans3$emmeans %>% as_tibble() %>% mutate(type = "DV90") -> em3
+```
+-> emm
+```{r}
+em1 %>% 
+  bind_rows(em2) %>% 
+  bind_rows(em3) %>% 
+  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  mutate(type = fct_recode(type,
+                          "D<sub>v10</sub>" = "DV10",
+                          "D<sub>v50</sub>" = "DV50",
+                          "D<sub>v90</sub>" = "DV90")) -> emm
+```
+
+
+```{r}
+droplet %>% 
+  pivot_longer(3:5, names_to = "type", values_to = "response") %>%
+  mutate(type = str_to_upper(type)) %>% 
+  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  dplyr::select(-rs, -x200, -rep) %>% 
+  mutate(type = fct_recode(type,
+                          "D<sub>v10</sub>" = "DV10",
+                          "D<sub>v50</sub>" = "DV50",
+                          "D<sub>v90</sub>" = "DV90")) -> droplet1
+```
+              
+                
+```{r}
+library(ggthemes)
+emm %>% 
+  ggplot(aes(x = fct_reorder(trt, response), y = response, color = trt)) +
+  geom_point(size = 2) +
+  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.3) +
+  geom_jitter(data = droplet1, alpha = 0.1, size = 2) +
+  facet_grid(~ type) +
+  coord_flip() +
+  labs(x = NULL, y = "Droplet size (µm)") +
+  scale_color_viridis_d(option = "C") +
+  theme_few() + 
+  theme(strip.text = element_markdown(size = 12),
+        legend.position = "none") -> dv
+```
+
+
+
+```{r}
+emmeans4$emmeans %>% as_tibble() -> em4
+emmeans5$emmeans %>% as_tibble() -> em5
+```
+```{r}
+droplet %>% 
+  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  dplyr::select(trt, rs) %>% 
+  rename(response = rs) -> droplet2
+```
+
+
+```{r}
+em4 %>% 
+  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  ggplot(aes(x = fct_reorder(trt, response), y = response, color = trt)) +
+  geom_point(size = 2) +
+  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.3) +
+  geom_jitter(data = droplet2, alpha = 0.1, size = 2) +
+  coord_flip() +
+  labs(x = NULL, y = "RS") +
+  scale_color_viridis_d(option = "C") +
+  theme_few() + 
+  theme(strip.text = element_markdown(),
+        legend.position = "none") -> rs
+```
+
+```{r}
+droplet %>% 
+  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  dplyr::select(trt, x200) %>% 
+  rename(response = x200) -> droplet3
+```
+
+
+```{r}
+(
+em5 %>% 
+  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  ggplot(aes(x = fct_reorder(trt, response*100), y = response*100, color = trt)) +
+  geom_point(size = 2) +
+  geom_linerange(aes(ymin = lower.HPD*100, ymax = upper.HPD*100), size = 1.3) +
+  geom_jitter(data = droplet3, alpha = 0.1, size = 2) +
+  coord_flip() +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8)) +
+  labs(x = NULL, y = "% drifable fines < 200 µm") +
+  scale_color_viridis_d(option = "C") +
+  theme_few() + 
+  theme(strip.text = element_markdown(),
+        legend.position = "none") -> x200
+)
+```
+
+```{r}
+rs + x200 -> fig
+dv / fig -> fig1
+
+ggsave("Figure 4.png", width = 9, height = 6)
+```
+

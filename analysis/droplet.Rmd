@@ -1,0 +1,170 @@
+---
+title: "droptlet"
+author: "Maxwel Coura Oliveira"
+date: "6/10/2021"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(glmmTMB)
+library(emmeans)
+library(betareg)
+library(lme4)
+library(multcomp)
+library(lmerTest)
+library(car)
+library(brms)
+```
+
+```{r}
+readxl::read_excel("droplet_data.xlsx")
+```
+
+
+```{r}
+readxl::read_excel("droplet_size_data.xlsx") %>% 
+  janitor::clean_names() %>% 
+  mutate_if(is_character, as_factor) %>% 
+  group_by(solution, nozzle) %>% 
+  mutate(nozzle = fct_recode(nozzle, 
+                             "ULD12003" = "ULD11003")) %>% 
+  mutate(x200 = x200/100) %>% 
+  mutate(rep = row_number()) -> droplet
+```
+
+# DV10
+
+```{r}
+model1 <- glm(`dv10` ~ solution * nozzle,
+                  family = Gamma(link = "inverse"),
+                  data = droplet)
+```
+
+
+```{r}
+Anova(model1)
+```
+
+
+```{r}
+emmeans1 <- emmeans(model1, ~ nozzle * solution, type = "response")
+```
+
+
+```{r}
+cld1 <- cld(emmeans1, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
+  as_tibble()
+cld1
+```
+
+
+# DV50
+
+```{r}
+model2 <- glm(`dv50` ~ solution * nozzle,
+                  family = Gamma(link = "inverse"),
+                  data = droplet)
+```
+
+
+```{r}
+Anova(model2)
+```
+
+
+```{r}
+emmeans2 <- emmeans(model2, ~ nozzle * solution, type = "response")
+```
+
+
+```{r}
+cld2 <- cld(emmeans2, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
+  as_tibble()
+cld2
+```
+
+
+# DV90
+
+```{r}
+model3 <- glm(`dv90` ~ solution * nozzle,
+                  family = Gamma(link = "inverse"),
+                  data = droplet)
+```
+
+
+```{r}
+Anova(model3)
+```
+
+
+```{r}
+emmeans3 <- emmeans(model3, ~ nozzle * solution, type = "response")
+```
+
+
+```{r}
+cld3 <- cld(emmeans3, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
+  as_tibble()
+cld3
+```
+
+# RS
+
+
+```{r}
+model4 <- glm(rs ~ solution * nozzle,
+                  family = Gamma(link = "inverse"),
+                  data = droplet)
+```
+
+
+```{r}
+Anova(model4)
+```
+
+
+```{r}
+emmeans4 <- emmeans(model4, ~ nozzle * solution, type = "response")
+```
+
+
+```{r}
+cld4 <- cld(emmeans4, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
+  as_tibble()
+cld4
+```
+
+
+
+# x200
+
+
+```{r}
+model5 <- betareg(x200 ~ solution * nozzle, 
+                  link = "logit",
+                  data = droplet)
+```
+
+
+```{r}
+Anova(model5)
+```
+
+
+```{r}
+emmeans5 <- emmeans(model5, ~ nozzle * solution, type = "response")
+```
+
+
+```{r}
+cld5 <- cld(emmeans5, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
+  as_tibble() 
+cld5
+```
+
+
+
+
+

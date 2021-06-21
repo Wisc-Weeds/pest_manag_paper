@@ -1,0 +1,666 @@
+---
+title: "combined"
+author: "Maxwel Coura Oliveira"
+date: "5/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	fig.align = "center",
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	include = FALSE
+)
+```
+
+```{r message = FALSE}
+# Packages
+options(scipen = 999)
+library(rstanarm)
+library(brms)
+library(scales)
+library(tidyverse)
+library(emmeans)
+library(ggthemes)
+library(ggpmisc)
+library(cowplot)
+library(patchwork)
+library(multcomp)
+library(ggtext)
+library(ggeffects)
+library(agricolae)
+library(extrafont)
+library(showtext)
+showtext_auto()
+font_add_google("Playfair Display", ## name of Google font
+                "Playfair")  ## name that will be used in R
+font_add_google("Bangers", "Bangers")
+
+```
+
+```{r}
+new_dt <- read_csv("deposition.csv")
+```
+
+```{r}
+new_dt %>% 
+  unite("trt", c("solution", "sprayer", "nozzle"), 
+        sep = "-", remove = FALSE) -> new_dt 
+```
+
+## Deposition inswath
+
+```{r}
+### Filter deposition dataset inswath
+inswath <-  new_dt %>% 
+  filter(type == "inswath") %>% 
+  filter(!is.na(deposition)) %>% 
+  mutate(trt = str_replace(trt, "Intact", "DRA")) 
+```
+
+```{r}
+### Test ANOVA assumptions
+#### Normal distribution
+inswath %>% 
+  ggplot(aes(x = deposition)) +
+  geom_histogram()
+# data has normal distribution
+```
+
+```{r}
+#### Homogeneity of variances
+bartlett.test(deposition ~ location, data = inswath)
+# can't compare locations
+```
+
+```{r eval=FALSE}
+### Data analysis
+#### Model
+
+model1 <- lmer(deposition ~  trt +
+                (1|block/location), 
+              data = inswath)
+```
+
+```{r eval=FALSE}
+isSingular(model1)
+```
+
+```{r}
+brm(deposition ~  trt +
+                (1|block/location), 
+    data = inswath,
+    control = list(adapt_delta = 0.95),
+    family = gaussian(),
+    warmup = 1000, iter = 2000, chains = 4,
+    prior = set_prior("student_t(0.5, 3, 11)", class = "b")) -> model1
+#    prior = set_prior("normal(0, 100)", class = "b")) -> model1
+```
+
+```{r}
+summary(model1, waic = TRUE)
+```
+
+```{r}
+#plot(model1)
+```
+
+```{r}
+rg <- ref_grid(model1)
+em <- emmeans(rg, "trt")
+summary(em, point.est = mean)
+
+epred <- emmeans(model1, "trt", dpar = "mean", cont="pairwise")
+summary(epred$emmeans, point.est = mean)
+```
+
+```{r}
+#https://easystats.github.io/bayestestR/articles/bayes_factors.html
+#https://www.statisticshowto.com/bayes-factor-definition/
+groups <- emmeans(model1, ~trt)
+group_diff <- pairs(groups)
+(groups_all <- rbind(groups, group_diff))
+
+# pass the original model via prior
+
+library(modelbased)
+estimate_contrasts(model1, test = "bf")
+```
+
+```{r}
+estimate_contrasts(model1, test = "bf") -> inswath_bf
+inswath_bf %>% 
+  tibble() -> inswath_bf
+#readr::write_csv(path = "inswath_bf.csv", x = inswath_bf)
+```
+
+
+```{r}
+em %>% as_tibble() %>% 
+  left_join(inswath) %>% 
+  ggplot(aes(x = fct_reorder(trt, emmean), y = emmean,
+             color = trt, shape = sprayer)) +
+  geom_point(size = 3) +
+  geom_jitter(data = inswath %>% 
+                rename(emmean = deposition), alpha = 0.1) +
+  scale_color_viridis_d(option = "H") +
+  coord_flip() +
+  scale_shape_manual(values = c(16, 1)) +
+  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.2) +
+  ylim(0, 1550) +
+  theme_few() +
+  labs(x = NULL, y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
+  theme(legend.position = "none") -> figA
+figA +
+  ggsave("Figure 1.png", width = 5, height = 5)
+```
+
+## Deposition upwind
+
+```{r}
+### Filter deposition dataset upwind
+upwind <- new_dt %>% 
+  filter(type == "upwind") %>% 
+  filter(!is.na(deposition))
+```
+
+```{r}
+### Test ANOVA assumptions
+#### Normal distribution
+upwind %>% 
+  ggplot(aes(x = deposition)) +
+  geom_histogram() 
+# not normalized
+```
+
+```{r}
+##### Log scale
+upwind %>% 
+  ggplot(aes(x = log(deposition))) +
+  geom_histogram()
+# yes!
+```
+
+```{r}
+brm(deposition ~  trt +
+                (1|block/location), 
+    data = upwind,
+    control = list(adapt_delta = 0.99),
+    family = gaussian(),
+    warmup = 1000, iter = 2000, chains = 4,
+    prior = set_prior("student_t(0.5, 3, 11)", class = "b")) -> model2
+```
+
+
+```{r}
+rg2 <- ref_grid(model2)
+em2 <- emmeans(rg2, "trt", point.est = mean)
+summary(em2, point.est = mean)
+
+epred2 <- emmeans(model2, "trt", dpar = "mean", cont="pairwise", type = "response")
+summary(epred2$emmeans, point.est = mean)
+```
+
+
+```{r}
+#library(bayestestR)
+#bayesfactor_parameters(groups_all, prior = model1)
+```
+
+
+```{r}
+#https://easystats.github.io/bayestestR/articles/bayes_factors.html
+#https://www.statisticshowto.com/bayes-factor-definition/
+groups <- emmeans(model1, ~trt)
+group_diff <- pairs(groups)
+(groups_all <- rbind(groups, group_diff))
+
+# pass the original model via prior
+
+library(modelbased)
+estimate_contrasts(model2, test = "bf") -> upwind_bf
+upwind_bf %>% 
+  tibble() -> upwind_bf
+#readr::write_csv(path = "upwind_bf.csv", x = upwind_bf)
+```
+
+```{r eval = FALSE}
+em2 %>% as_tibble() %>% 
+  ggplot(aes(x = fct_reorder(trt, emmean), y = emmean,
+             color = trt)) +
+  geom_point(size = 3) +
+  geom_jitter(data = upwind %>% 
+                rename(emmean = deposition), alpha = 0.05) +
+  scale_color_viridis_d(option = "H") +
+  coord_flip() +
+  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.2) +
+#  ylim(0, 0.5) +
+  theme_few() +
+  labs(x = NULL, y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
+  theme(legend.position = "none") -> figB
+figB +
+  ggsave("Figure 1B.png", width = 10, height = 5)
+```
+
+```{r eval = FALSE}
+library(patchwork)
+
+figB + figA + plot_annotation(tag_levels = 'A') -> figC
+
+ggsave("Figure 1.png", width = 10, height = 5)
+```
+
+# Deposition downwind
+
+```{r}
+## Filter data
+data_dw <- new_dt %>% 
+  filter(type == "downwind") %>% 
+  mutate(pass = factor(pass)) %>% 
+  group_by(location, pass, block) 
+```
+
+```{r}
+## Visualize
+data_dw %>% 
+  ggplot(aes(x = distance_m, y = deposition, color = nozzle)) +
+  geom_point() +
+  facet_grid(~ location)
+# some trt have rapid decrease and some trt have linear trend
+```
+
+```{r}
+## Visualize (log scale)
+data_dw %>% 
+#  unite("trt", c("solution", "sprayer", "nozzle")) %>% 
+  ggplot(aes(x = log(distance_m), y = log(deposition), color = nozzle)) +
+  geom_point() +
+  facet_grid(sprayer ~ solution) +
+  geom_smooth(method = "lm") 
+# better go with log scale
+```
+
+```{r}
+## Normal distribution
+data_dw %>% 
+  ggplot(aes(x = log(deposition))) +
+  geom_histogram()
+```
+
+```{r}
+# Linear Model
+## Arrange dataset
+data_dw1 <- data_dw %>% 
+  group_by(trt) %>% 
+  nest()
+
+data_dw1
+```
+
+```{r}
+pr <- prior(normal(0, 1), class = 'b')
+### Model function
+model3 <- function(df){
+  brm(log(deposition) ~ log(distance_m) + 
+         (1|block/location), data = df,
+      
+       prior = pr, cores=4)
+}
+```
+
+  
+
+```{r}
+### Model function
+model3 <- function(df){
+  brm(log(deposition) ~ log(distance_m) + 
+         (1|block/location), data = df,
+      control = list(adapt_delta = 0.95),
+      family = gaussian(),
+      warmup = 1000, iter = 2000, chains = 4,
+    prior = set_prior("student_t(0.5, 3, 11)", class = "b"))
+}
+```
+
+
+```{r warning=FALSE, message = FALSE, warning = FALSE}
+### Fit model and confidence intervals
+data_dw2 <- data_dw1 %>% 
+  mutate(model = map(data, model3),
+         summary = map(model, broom.mixed::tidy))
+```
+
+```{r}
+### Get parameters from models
+params <- data_dw2 %>% 
+  unnest(summary) %>% 
+  filter(effect == "fixed") %>% 
+  mutate(estimate_exp = exp(estimate),
+         estimate_exp = case_when(
+           term == "log(distance_m)" ~ -estimate_exp,
+           TRUE                      ~ estimate_exp
+         )) %>% 
+  dplyr::select(trt, term, estimate, std.error, conf.low, conf.high) %>% 
+  mutate(term = fct_recode(term,
+                           slope = "logdistance_m"),
+         term = fct_recode(term,
+                           Intercept = "(Intercept)")) %>% 
+  mutate(estimate = exp(estimate),
+         conf.low = exp(conf.low),
+         conf.high = exp(conf.high))
+
+params
+```
+
+```{r}
+params %>% 
+
+  pivot_wider(id_cols = trt,
+              names_from = "term", 
+              values_from = "estimate") %>% 
+  mutate(slope = - slope) -> distance_final
+```
+
+```{r}
+distance_function <- function(int, slope, y = 0) {
+  distance = (y - int) / slope
+  return(distance)
+}
+
+distance_final1 <- distance_final %>% 
+  mutate(distance_m = map2_dbl(Intercept, slope, distance_function),
+         distance_m = round(distance_m, 10)) %>% 
+  mutate( y = Intercept + slope * distance_m)
+```
+
+```{r}
+linear <- function(a, b, d) {
+  y = a + b*d
+  return(y)
+}
+
+linear(distance_final1$Intercept, distance_final1$slope, distance_final1$distance_m)
+```
+
+### Intercept
+
+```{r include=TRUE, eval = FALSE}
+a <- params %>% 
+  filter(term == "Intercept") %>% 
+  ggplot(aes(x = fct_reorder(trt, estimate), y = estimate, color = trt)) +
+  geom_point(size = 2, stroke = 1) +
+  scale_color_viridis_d(option = "H") +
+  geom_linerange(aes(ymin = conf.low, ymax = conf.high), size = 1.5) +
+  coord_flip() +
+  labs(y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")")),
+       x = NULL) +
+  theme_few() +
+  theme(legend.position = "none")
+a
+```
+
+### Slope
+
+```{r include=TRUE, eval = FALSE}}
+b <- params %>% 
+  filter(term == "slope") %>% 
+  ggplot(aes(x = fct_reorder(trt, -estimate), 
+             y = -estimate, color = trt)) +
+  geom_point(size = 2, stroke = 1) +
+  scale_color_viridis_d(option = "H") +
+  geom_linerange(aes(ymin = -conf.low, ymax = -conf.high), size = 1.5) +
+  coord_flip() +
+  labs(y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")")),
+       x = NULL) +
+  theme_few() +
+  theme(legend.position = "none") 
+b
+```
+
+```{r eval = FALSE}
+a + b + plot_annotation(tag_levels = 'A') -> figZ
+
+ggsave("Figure 2.png", width = 10, height = 5)
+```
+
+### Predicted downwind distance
+
+```{r include=TRUE}
+c <- distance_final1 %>% 
+  mutate(trt = str_replace(trt, "Intact", "DRA")) %>% 
+  mutate(hood = if_else(str_detect(trt, "Open"), "Open", "Hood")) %>% 
+  ggplot(aes(x = fct_reorder(trt, distance_m), 
+             y = distance_m,
+             label = distance_m, color = trt, shape = hood)) +
+  geom_point(size = 3, stroke = 1) +
+  scale_shape_manual(values = c(16, 1)) +
+  geom_segment(aes(x= trt, xend= trt, y=0, yend=distance_m), size = 2) +
+  coord_flip() +
+  scale_color_viridis_d(option = "H") + 
+  labs(y = "Predicted distance (m)", x = NULL) +
+  ylim(0,60) +
+  theme_few() +
+  theme(legend.position = "none")  
+c
+```
+
+```{r}
+fig <- data_dw2 %>% 
+  dplyr::select(trt, model)
+```
+
+```{r warning=FALSE, message = FALSE}
+fig_model <- function(model){
+  ggpredict(model, terms = "distance_m", back.transform = TRUE) %>% 
+    as_tibble()
+}
+
+fig1 <- fig %>% 
+  mutate(estimates = map(model, fig_model)) %>% 
+  unnest(estimates) %>% 
+  rename(distance_m = x) %>% 
+  mutate_if(is_character, as_factor) 
+```
+
+```{r}
+fig1 %>% 
+  distinct(trt) %>%
+  ungroup() %>% 
+  mutate(id = row_number()) -> id_col
+
+fig1 %>% 
+  left_join(id_col) -> fig1
+```
+
+```{r eval=FALSE, include=FALSE}
+library(sjstats)
+performance::r2(fig1$model[[2]]) -> m1
+m1
+```
+
+```{r eval=FALSE, include=FALSE}
+rsquared <- function(trt){
+  performance::r2(fig1$model[[trt]])$R2_Bayes
+}
+```
+
+```{r eval=FALSE, include=FALSE}
+fig1 %>% 
+  mutate(rsquared = map(id, rsquared)) %>% 
+  unnest(rsquared) -> fig1
+```
+
+```{r}
+label <- distance_final %>% 
+  mutate(Intercept = round(Intercept, 1),
+         slope = round(slope, 2)) %>% 
+  mutate(y = "y = ",
+         x = "x") %>% 
+  unite("formula", c("y", "Intercept", "slope"), sep = " ") %>% 
+  unite("formula", c("formula", "x"), sep = "")
+```
+
+```{r}
+fig2 <- fig1 %>% 
+  left_join(label)
+```
+
+### Back-transformed linear models
+
+```{r include=TRUE}
+figs <- fig2 %>% 
+  mutate(trt = str_replace(trt, "Intact", "DRA")) %>% 
+  mutate(hood = if_else(str_detect(trt, "Open"), "Open", "Hood")) %>% 
+  ggplot(aes(x = distance_m, y = predicted, color = trt, 
+             fill = trt, label = formula, shape = hood)) +
+  scale_color_viridis_d(option = "H") + 
+  scale_fill_viridis_d(option = "H") + 
+  geom_line(fill = NA) +
+  geom_point(alpha = 0.5) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), 
+              alpha = 0.3, color = NA) +
+  facet_wrap(~ trt, ncol = 3) +
+  scale_shape_manual(values = c(16, 1)) + 
+  theme_few() +
+  geom_label(aes(label = formula), x = 30, y = 20, color = "white") +
+  labs(x = "Distance (m)", 
+       y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
+  theme(legend.position = "none",
+        strip.background = element_blank(),
+        strip.text = element_textbox(
+          size = 12,
+          color = "white", 
+          fill = "#494949", 
+          box.color = "#282728",
+          halign = 0.5, linetype = 1, r = unit(5, "pt"), width = unit(1, "npc"),
+          padding = margin(2, 0, 1, 0), 
+          margin = margin(3, 3, 3, 3))) +
+  ggsave("Figure 2.png", width = 6, height = 9)
+figs
+```
+
+### AUC
+
+
+
+```{r}
+(id_df <- data_dw %>% 
+  distinct(pass, block, location) %>% 
+  ungroup() %>% 
+  mutate(id = as_factor(dplyr::row_number()))
+)
+```
+
+```{r}
+id_df1 <- data_dw %>% 
+  left_join(id_df) 
+```
+
+```{r}
+auc_cal <- function(number){
+  df <- id_df1 %>% 
+    filter(id == number)  
+  
+  audps(df$deposition, df$distance_m, type="absolute") 
+}
+
+auc_data <- id_df1 %>% 
+  group_by(id) %>% 
+  nest() %>% 
+  mutate(auc = map_dbl(id, auc_cal)) %>% 
+  ungroup(id) %>% 
+  unnest() %>% 
+  filter(!is.na(auc)) %>% 
+  mutate(trt = str_replace(trt, "Intact", "DRA")) 
+```
+
+```{r}
+auc_data1 <- auc_data %>% 
+  filter(distance_m == 1) %>% 
+  mutate(trt = str_replace(trt, "Intact", "DRA")) 
+```
+
+```{r}
+auc_data1 %>% 
+  ggplot(aes(x = log(auc))) + 
+  geom_histogram()
+```
+
+```{r}
+brm(auc ~  trt +
+                (1|block/location), 
+    data = auc_data1,
+    control = list(adapt_delta = 0.99),
+    family = "gaussian",
+    warmup = 1000, iter = 2000, chains = 4,
+   prior = set_prior("student_t(0.5, 3, 11)", class = "b")) -> auc_model
+```
+
+
+```{r}
+rg3 <- ref_grid(auc_model)
+em3 <- emmeans(rg3, "trt")
+summary(em3, point.est = mean)
+```
+
+
+```{r}
+plot(em3, ~ "trt", type="response")
+```
+
+
+```{r}
+epred3 <- emmeans(auc_model, "trt", dpar = "mean", 
+                  cont="pairwise")
+summary(epred3$emmeans, point.est = mean, type = "response")
+#https://easystats.github.io/bayestestR/articles/bayes_factors.html
+```
+
+
+
+```{r}
+epred3$emmeans %>% as_tibble() %>% 
+  left_join(auc_data1) %>% 
+  ggplot(aes(x = fct_reorder(trt, emmean), y = emmean,
+             color = trt, shape = sprayer)) +
+  geom_point(size = 3) +
+  geom_jitter(data = auc_data %>% 
+                rename(emmean = auc), alpha = 0.02) +
+  scale_color_viridis_d(option = "H") +
+  coord_flip() +
+  scale_shape_manual(values = c(16, 1)) +
+  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.2) +
+  scale_y_continuous(breaks = c(0, 50, 100, 150, 200, 250)) +
+  theme_few() +
+  labs(x = NULL, y = "Area under the curve") +
+  theme(legend.position = "none") -> figE
+figE
+```
+
+
+```{r}
+estimate_contrasts(auc_model, test = "bf") -> auc_bf
+auc_bf %>% 
+  tibble() -> auc_bf
+readr::write_csv(path = "auc_bf.csv", x = auc_bf)
+```
+
+
+
+```{r eval = FALSE}
+library(modelbased)
+estimate_contrasts(auc_model, test = "bf") %>% 
+  kableExtra::kable()
+```
+
+
+
+```{r}
+c + figE + plot_annotation(tag_levels = 'A') -> figU
+
+ggsave("Figure 3.png", width = 10, height = 5)
+```
+
+
