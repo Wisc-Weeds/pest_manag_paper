@@ -1,0 +1,335 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  12pt,
+  a4paper,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+  \setmainfont[]{Arial}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Spray particle drift},
+  pdfauthor={Maxwel C. Oliveira, Guilherme Alves, Greg Kruger and Rodrigo Werle},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin = 2.54cm]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage[left]{lineno}
+\linenumbers
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
+  % set entry spacing
+  \ifnum #2 > 0
+  \setlength{\parskip}{#2\baselineskip}
+  \fi
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\title{Spray particle drift}
+\author{Maxwel C. Oliveira, Guilherme Alves, Greg Kruger and Rodrigo
+Werle}
+\date{2021-06-22}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+BACKGROUND:
+\end{abstract}
+
+\setstretch{2}
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+\hypertarget{materials-and-methods}{%
+\section{Materials and Methods}\label{materials-and-methods}}
+
+Solution, sprayer and nozzle factors were grouped as a single fixed
+effect (herein treatments) due to missing factor water in Missouri.
+Resulting in a combination of 12 treatments.
+
+\hypertarget{statistical-analyses}{%
+\subsection{Statistical analyses}\label{statistical-analyses}}
+
+The statistical analyses were conducted with R statistical software
+version 4.1.0.\textsuperscript{1} Data analyses were performed with
+Bayesian inference with ``brms'' package.\textsuperscript{2} Bayesian
+inference uses Markov chain Monte Carlo algorithms for sampling a
+probability distribution;\textsuperscript{2} and avoid singular fit from
+frequentist linear models when using complex random effects.
+
+\hypertarget{spray-solution-deposition-at-upwind-and-inswath}{%
+\subsubsection{Spray solution deposition at upwind and
+inswath}\label{spray-solution-deposition-at-upwind-and-inswath}}
+
+Data was fitted to a mixed model using \emph{brm} function. Treatments
+were the fixed effects and block nested within location random effects.
+Model family was gaussian and prior distribution was set to student-t
+with mean 0.5, standard deviation 3 and 11 degrees of freedom. The
+posterior summaries (mean and highest posterior density) were estimated
+with \emph{emmeans} function from ``emmeans'' package. Treatment means
+were compared using Bayes Factor (BF).\textsuperscript{3,4} In short, if
+BF \textgreater{} 1 there is evidence for H1 (difference between
+treatments); whereas, if H0 \textless{} 1 there is evidence for H0 (no
+difference between treatments). If BF = 1, there is no evidence. The
+level of evidence (anecdotal, moderate, strong, very strong, and
+extreme) varies as the BF value increase (evidence for H1) or decrease
+(evidence for H0).
+
+\hypertarget{spray-solution-deposition-at-downwind}{%
+\subsubsection{Spray solution deposition at
+downwind}\label{spray-solution-deposition-at-downwind}}
+
+Data was fitted to a Bayesian linear mixed model using \emph{brm}
+function. Spray solution deposition and distance were log-transformed to
+meet linearity. A single model was fitted to each treatment. For each
+model, treatments and distance were the fixed effects and block nested
+within location random effects. Model family was gaussian and prior
+distribution was set to student-t with mean 0.5, standard deviation 3
+and 11 degrees of freedom. For clarification, intercepts, slopes were
+back-transformed with \emph{exponential} function. Moreover, the linear
+models fitted were used to predict the distance where no spray particle
+deposition was detected (0 ηL cm\textsuperscript{-2}) for each
+treatment, which was also back-transformed to m scale.
+
+The area under the curve (AUC) was used to validate the linear models.
+The spray solution deposition across distances within a experimental
+unit were used to calculate the absolute AUC value. The AUC was
+performed with \emph{audps} function from ``agricolae'' package. The AUC
+is commonly used for plant disease progress\textsuperscript{5,6} but has
+been used to calculate herbicide injury.\textsuperscript{7} Data was
+fitted to a mixed model using \emph{brm} function. Treatments were the
+fixed effects and block nested within location random effects. Model
+family was gaussian and prior distribution was set to student-t with
+mean 0.5, standard deviation 3 and 11 degrees of freedom. The posterior
+summaries (mean and highest posterior density) were estimated with
+\emph{emmeans} function from ``emmeans'' package. Treatment means were
+compared using Bayes Factor (BF) as above-mentioned.
+
+\hypertarget{dv-relative-span}{%
+\subsubsection{Dv, Relative Span}\label{dv-relative-span}}
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+\hypertarget{spray-solution-deposition-at-inswath-and-upwind}{%
+\subsection{Spray solution deposition at inswath and
+upwind}\label{spray-solution-deposition-at-inswath-and-upwind}}
+
+In general, Open sprayer treatments resulted in a more variable spray
+particle deposition than Hood treatments (Figure 1). The inclusion of
+either DRA or Water strongly impacted spray particle deposition inswath
+for Open sprayer treatments, regardless nozzle type. The top and bottom
+three treatments contained either DRA or Water, respectively. For
+example, treatment DRA-Open-ULD resulted in the highest spray particle
+deposition (1318.5 ηL cm\textsuperscript{-2}, Figure 1). In contrast,
+911.2 nL cm\textsuperscript{-2} was the lowest spray solution
+deposition, which was achieved with Water-Open-ULD treatment. Hood
+sprayer treatments resulted in a more uniform spray particle deposition.
+Furthermore, there were less than 0.29 ηL cm\textsuperscript{-2} spray
+deposition at upwind with a strong evidence (BF \textless{} 0.25) of no
+difference between all pairwise treatments contrasts (data not shown).
+
+\hypertarget{spray-solution-deposition-at-downwind-1}{%
+\subsection{Spray solution deposition at
+downwind}\label{spray-solution-deposition-at-downwind-1}}
+
+Treatments with highest intercepts, which is the amount of spray
+particle deposition near the treated area, were Water-Open-AIXR (15.7 ηL
+cm\textsuperscript{-2}), followed by DRA-Open-AIXR (15.7 ηL
+cm\textsuperscript{-2}), and Water-Open-ULD (12.0 ηL
+cm\textsuperscript{-2}; Figure 2). In contrast, DRA-Hood-TTI,
+DRA-Hood-ULD and DRA-Hood-AIXR treatments resulted in the lowest
+intercepts (\textless{} 2.0 ηL cm\textsuperscript{-2}). In addition,
+there is evidence that treatments with Hood sprayer provided faster
+decay of spray particle deposition (slopes; Figure 2). The treatments
+with highest slope decay were Water-Hood-TTI (-0.50), DRA-Hood-TTI
+(-0.48), DRA-Hood-ULD (-0.44), Water-Hood-AIXR (-0.43), Water-Hood-ULD
+(-0.43), and DRA-Hood-AIXR (-0.39).
+
+The predicted distance where no spray particle deposition was detected
+varied upon treatments (Figure 3A). In general, Open sprayer treatments
+resulted in spray particle deposition at longest distances. For example,
+the distance of non-detectable spray particle deposition with Open
+sprayer treatments varied from 9.9 m (DRA-Open-TTI) to 54.9 m with
+DRA-Open-AIXR; whereas Hood sprayer treatments varied from 1.4 to 8.2 m
+with DRA-Hood-TTI and Water-Hood-AIXR, respectively.
+
+Similar trend was observed to AUC. Treatments with Hood or Open sprayer
+strongly impacted on AUC values (Figure 3B). The highest AUC values were
+Water-Open-AIXR (87.4), followed by Water-Open-ULD (72.9) and
+DRA-Open-AIXR (72.6). In contrast, DRA-Hood-TTI (13.9), DRA-Hood-ULD
+(14.3) and Water-Open-AIXR (21.9) resulted in lowest AUC values. The
+impact of Open and Hood sprayer is demonstrated in treatments including
+AIXR nozzle. There is a high difference in AUC (50.7) between
+DRA-Open-AIXR vs DRA-Hood-AIXR (BF \textgreater{} 100). Moreover,
+addition of DRA did reduced AUC values when comparing within fixed
+factors, sprayer (Hood and Open) and nozzle (AIXR, TTI and ULD);
+however, addition of DRA were not statistically different for some
+contrasts, including DRA-Hood-TTI vs Water-Hood-TTI (BF = 0.91),
+DRA-Open-TTI vs Water-Open-TTI (BF = 0.55), and DRA-Open-AIXR vs
+Water-Open-AIXR (BF = 0.93).
+
+\hypertarget{dv-relative-span-1}{%
+\subsection{Dv, Relative Span}\label{dv-relative-span-1}}
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+\hypertarget{spray-solution-deposition-at-inswath-and-upwind-1}{%
+\subsection{Spray solution deposition at inswath and
+upwind}\label{spray-solution-deposition-at-inswath-and-upwind-1}}
+
+\hypertarget{spray-solution-deposition-at-downwind-2}{%
+\subsection{Spray solution deposition at
+downwind}\label{spray-solution-deposition-at-downwind-2}}
+
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+\hypertarget{acknowledgments}{%
+\section{Acknowledgments}\label{acknowledgments}}
+
+\hypertarget{conflict-of-interest-declaration}{%
+\section{Conflict of Interest
+Declaration}\label{conflict-of-interest-declaration}}
+
+\hypertarget{tables-each-table-complete-with-title-and-footnotes}{%
+\section{Tables (each table complete with title and
+footnotes)}\label{tables-each-table-complete-with-title-and-footnotes}}
+
+\hypertarget{figure-legends}{%
+\section{Figure Legends}\label{figure-legends}}
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\hypertarget{ref-LanguageEnvironmentStatistical2021}{}%
+\CSLLeftMargin{1 }
+\CSLRightInline{R: {A Language} and {Environment} for {Statistical
+Computing}, {R Foundation for Statistical Computing}, {Vienna, Austria}
+(2021).}
+
+\leavevmode\hypertarget{ref-burknerBrmsPackageBayesian2017}{}%
+\CSLLeftMargin{2 }
+\CSLRightInline{Bürkner P-C, \textbf{Brms} : {An} {\emph{R}} {Package}
+for {Bayesian Multilevel Models Using} {\emph{Stan}}, \emph{J Stat Soft}
+\textbf{80} (2017).}
+
+\leavevmode\hypertarget{ref-leeBayesianCognitiveModeling2014}{}%
+\CSLLeftMargin{3 }
+\CSLRightInline{Lee MD and Wagenmakers E-J, Bayesian {Cognitive
+Modeling}: {A Practical Course}, {Cambridge University Press} (2014).}
+
+\leavevmode\hypertarget{ref-kassBayesFactors1995}{}%
+\CSLLeftMargin{4 }
+\CSLRightInline{Kass RE and Raftery AE, Bayes {Factors}, \emph{Journal
+of the American Statistical Association} \textbf{90}:773--795,
+{{[}American Statistical Association, Taylor \& Francis, Ltd.{]}}
+(1995).}
+
+\leavevmode\hypertarget{ref-meenaAreaDiseaseProgress2011}{}%
+\CSLLeftMargin{5 }
+\CSLRightInline{Meena PD, Chattopadhyay C, Meena SS, and Kumar A, Area
+under disease progress curve and apparent infection rate of {Alternaria}
+blight disease of {Indian} mustard ({Brassica} juncea) at different
+plant age, \emph{Archives of Phytopathology and Plant Protection}
+\textbf{44}:684--693, {Taylor \& Francis} (2011).}
+
+\leavevmode\hypertarget{ref-simkoAreaDiseaseProgress2011}{}%
+\CSLLeftMargin{6 }
+\CSLRightInline{Simko I and Piepho H-P, The {Area Under} the {Disease
+Progress Stairs}: {Calculation}, {Advantage}, and {Application},
+\emph{Phytopathology®} \textbf{102}:381--389, {Scientific Societies}
+(2011).}
+
+\leavevmode\hypertarget{ref-striegelSpraySolutionPH2021}{}%
+\CSLLeftMargin{7 }
+\CSLRightInline{Striegel S, Oliveira MC, Arneson N, Conley SP,
+Stoltenberg DE, and Werle R, Spray solution {pH} and soybean injury as
+influenced by synthetic auxin formulation and spray additives,
+\emph{Weed Technol} \textbf{35}:113--127 (2021).}
+
+\end{CSLReferences}
+
+\end{document}
