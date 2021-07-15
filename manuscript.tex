@@ -40,8 +40,8 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Spray particle drift},
-  pdfauthor={Maxwel C. Oliveira, Guilherme Alves, Greg Kruger and Rodrigo Werle},
+  pdftitle={Off-target spray particle movement},
+  pdfauthor={Rodrigo Werle; Bruno C Vieira; Maxwel C. Oliveira; Guilherme Alves; Greg Kruger},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -103,10 +103,10 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-\title{Spray particle drift}
-\author{Maxwel C. Oliveira, Guilherme Alves, Greg Kruger and Rodrigo
-Werle}
-\date{2021-07-14}
+\title{Off-target spray particle movement}
+\author{Rodrigo Werle \and Bruno C Vieira \and Maxwel C.
+Oliveira \and Guilherme Alves \and Greg Kruger}
+\date{2021-07-15}
 
 \begin{document}
 \maketitle
@@ -118,24 +118,25 @@ BACKGROUND:
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
+Integrate pest management The off-target particle movement
+
+The objective of this stu
+
 \hypertarget{materials-and-methods}{%
 \section{Materials and Methods}\label{materials-and-methods}}
 
-\hypertarget{experimental-sites}{%
-\subsection{Experimental sites}\label{experimental-sites}}
+\hypertarget{field-study}{%
+\subsection{Field study}\label{field-study}}
 
 Field experiments were conducted in three locations: North Platte, NE
 (geographic coordinates) on September 11-12/2021; Arlington, WI
 (geographic coordinates) on September 15-16/2021; and city, MO
-(geographic coordinates) on September 18-20/2021. In NE, WI, and MO,
-applications were made on bare ground, corn stubble (XX cm height) and
-????, respectively. The fields were flat and with no surrounding trees.
+(geographic coordinates) on September 18-20/2021. Applications were made
+on bare ground, corn stubble (XX cm height) and ???? in NE, WI, and MO,
+respectively. The fields were flat and with no surrounding trees.
 Samples were processed and analyzed at the Pesticide Application
 Technology Laboratory of the University of Nebraska-Lincoln located in
 North Platte, Nebraska.
-
-\hypertarget{field-study}{%
-\subsection{Field study}\label{field-study}}
 
 Three factors were evaluated: sprayer type, nozzle type, and spray
 solution. Each experimental treatment was replicated 10 times. Two
@@ -176,7 +177,7 @@ the laser was 0.3 m. The VMD and V200 for each combination spray
 solution versus nozzle type are listed in Table 1.
 
 \hypertarget{application-and-field-layout}{%
-\subsection{Application and field
+\subsubsection{Application and field
 layout}\label{application-and-field-layout}}
 
 Prior to the applications, 27 drift collection stations were placed
@@ -215,7 +216,7 @@ WindSonic anemometers (Gill Instruments, Lymington, UK). The
 meteorological data for each respective treatment is listed in Figure 2.
 
 \hypertarget{dye-quantification}{%
-\subsection{Dye quantification}\label{dye-quantification}}
+\subsubsection{Dye quantification}\label{dye-quantification}}
 
 Samples were taken to the laboratory for dye extraction and
 quantification using fluorometry technique. Distilled water was used as
@@ -231,9 +232,10 @@ each tank sample to generate calibration curves, which allowed the
 conversion of relative fluorescence unit into mg L-1 and further
 expressing data into ɳL cm-2.
 
-Solution, sprayer and nozzle factors were grouped as a single fixed
-effect (herein treatments) due to missing factor water in Missouri.
-Resulting in a combination of 12 treatments.
+\hypertarget{greenhouse-study}{%
+\subsection{Greenhouse study}\label{greenhouse-study}}
+
+A completely randomized design
 
 \hypertarget{statistical-analyses}{%
 \subsection{Statistical analyses}\label{statistical-analyses}}
@@ -245,8 +247,15 @@ inference uses Markov chain Monte Carlo algorithms for sampling a
 probability distribution;\textsuperscript{2} and avoids singular fit
 from frequentist linear models when using complex random effects.
 
+\hypertarget{field-study-1}{%
+\subsubsection{Field study}\label{field-study-1}}
+
+Solution, sprayer and nozzle factors were grouped as a single fixed
+effect (herein treatments) due to missing factor water in Missouri.
+Resulting in a combination of 12 treatments.
+
 \hypertarget{spray-solution-deposition-at-upwind-and-inswath}{%
-\subsubsection{Spray solution deposition at upwind and
+\paragraph{Spray solution deposition at upwind and
 inswath}\label{spray-solution-deposition-at-upwind-and-inswath}}
 
 Data was fitted to a mixed model using \emph{brm} function. Treatments
@@ -264,7 +273,7 @@ extreme) varies as the BF value increases (evidence for H1) or decreases
 (evidence for H0).
 
 \hypertarget{spray-solution-deposition-at-downwind}{%
-\subsubsection{Spray solution deposition at
+\paragraph{Spray solution deposition at
 downwind}\label{spray-solution-deposition-at-downwind}}
 
 Data was fitted to a Bayesian linear mixed model using \emph{brm}
@@ -289,12 +298,24 @@ fitted to a mixed model using \emph{brm} function. Treatments were the
 fixed effects and blocks nested within location random effects. Model
 family was gaussian and prior distribution was set to student-t with
 mean 0.5, standard deviation 3 and 11 degrees of freedom. The posterior
-summaries (mean and highest posterior density) were estimated with
-\emph{emmeans} function from the ``emmeans'' package. Treatment means
-were compared using Bayes Factor (BF) as above-mentioned.
+summaries and treatment means were estimated and compared using Bayes
+Factor (BF) as above-mentioned.
 
-\hypertarget{dv-relative-span}{%
-\subsubsection{Dv, Relative Span}\label{dv-relative-span}}
+\hypertarget{greenouse-study}{%
+\subsection{Greenouse study}\label{greenouse-study}}
+
+The Dv(10,50,90), RS, and \% drifable fines was fitted to a Bayesian
+linear mixed model using \emph{brm} function. In the models, solution
+and nozzle were set as fixed effects. Model family was hurdle gamma and
+prior distribution was set to student-t with mean 0.5, standard
+deviation 1 and 2 degrees of freedom. For each response variable, two
+models were fitted: with and without interaction (solution and nozzle).
+A model comparison was made with \textbf{bayesfactor\_models} from
+``bayestestR'' package\textsuperscript{8} to investigate interaction
+significance. For all response variables (Dvs, RS and \% drifable
+fines), the best model was with interaction. The posterior summaries and
+treatment means were estimated and compared using Bayes Factor (BF) as
+above-mentioned.
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
@@ -357,8 +378,8 @@ contrasts, including DRA-Hood-TTI vs Water-Hood-TTI (BF = 0.91),
 DRA-Open-TTI vs Water-Open-TTI (BF = 0.55), and DRA-Open-AIXR vs
 Water-Open-AIXR (BF = 0.93).
 
-\hypertarget{dv-relative-span-1}{%
-\subsection{Dv, Relative Span}\label{dv-relative-span-1}}
+\hypertarget{dv-relative-span}{%
+\subsection{Dv, Relative Span}\label{dv-relative-span}}
 
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
@@ -439,6 +460,13 @@ Progress Stairs}: {Calculation}, {Advantage}, and {Application},
 Stoltenberg DE, and Werle R, Spray solution {pH} and soybean injury as
 influenced by synthetic auxin formulation and spray additives,
 \emph{Weed Technol} \textbf{35}:113--127 (2021).}
+
+\leavevmode\hypertarget{ref-makowski2019}{}%
+\CSLLeftMargin{8 }
+\CSLRightInline{Makowski D, Ben-Shachar M, and Lüdecke D, {bayestestR}:
+{Describing Effects} and their {Uncertainty}, {Existence} and
+{Significance} within the {Bayesian Framework}, \emph{JOSS}
+\textbf{4}:1541 (2019).}
 
 \end{CSLReferences}
 
