@@ -31,7 +31,7 @@ font_add_google("Roboto", "roboto")
 
 
 ```{r}
-readxl::read_excel("droplet_data.xlsx")
+#readxl::read_excel("droplet_data.xlsx")
 ```
 
 
@@ -345,9 +345,9 @@ cld5 %>%
 ```{r}
 fig1 + fig2 + fig3 +
   plot_annotation(tag_levels = 'A') & 
-  theme(plot.tag = element_text(size = 25, hjust = 0, vjust = 0))
+  theme(plot.tag = element_text(size = 26, hjust = 0, vjust = 0))
 
-ggsave("Figure 4.png", width = 9, height = 3)
+ggsave("Figure 4.png", width = 11, height = 4)
 ```
 
 

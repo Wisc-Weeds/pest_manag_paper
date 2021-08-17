@@ -25,9 +25,7 @@ library(tidyverse)
 library(emmeans)
 library(ggthemes)
 library(ggpmisc)
-library(cowplot)
 library(patchwork)
-library(multcomp)
 library(ggtext)
 library(ggeffects)
 library(agricolae)
@@ -36,8 +34,7 @@ library(showtext)
 showtext_auto()
 font_add_google("Lato", ## name of Google font
                 "lato")  ## name that will be used in R
-font_add_google("Roboto", "roboto")
-
+#font_add_google("Roboto", "roboto")
 ```
 
 ```{r}
@@ -79,13 +76,13 @@ bartlett.test(deposition ~ location, data = inswath)
 ### Data analysis
 #### Model
 
-model1 <- lmer(deposition ~  trt +
-                (1|block/location), 
-              data = inswath)
+#model1 <- lmer(deposition ~  trt +
+#                (1|block/location), 
+#              data = inswath)
 ```
 
 ```{r eval=FALSE}
-isSingular(model1)
+#isSingular(model1)
 ```
 
 ```{r}
@@ -138,23 +135,35 @@ inswath_bf %>%
 
 
 ```{r}
+library(ggrepel)
 em %>% as_tibble() %>% 
-  left_join(inswath) %>% 
+  mutate(sprayer = if_else(str_detect(trt, "Open"), "Open", "Hood")) %>% 
+  mutate(emmean = round(emmean, 1)) %>% 
   ggplot(aes(x = fct_reorder(trt, emmean), y = emmean,
-             color = trt, shape = sprayer)) +
+             color = trt, shape = sprayer, label = emmean)) +
   geom_point(size = 3) +
   geom_jitter(data = inswath %>% 
                 rename(emmean = deposition), alpha = 0.1) +
   scale_color_viridis_d(option = "H") +
   coord_flip() +
+  geom_text_repel(  size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 455) +
   scale_shape_manual(values = c(16, 1)) +
   geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.2) +
-  ylim(0, 1550) +
-  theme_few() +
+  ylim(0, 2000) +
+  theme_few(base_family = "lato") +
   labs(x = NULL, y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
-  theme(legend.position = "none") -> figA
-figA +
-  ggsave("Figure 1.png", width = 5, height = 5)
+  theme(legend.position = "none",
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 25)) -> figA
+
+  ggsave("Figure 1.png", width = 5, height = 4)
 ```
 
 ## Deposition upwind
@@ -240,8 +249,8 @@ em2 %>% as_tibble() %>%
   theme_few() +
   labs(x = NULL, y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
   theme(legend.position = "none") -> figB
-figB +
-  ggsave("Figure 1B.png", width = 10, height = 5)
+
+#  ggsave("Figure 1B.png", width = 10, height = 5)
 ```
 
 ```{r eval = FALSE}
@@ -431,18 +440,32 @@ ggsave("Figure 2.png", width = 10, height = 5)
 c <- distance_final1 %>% 
   mutate(trt = str_replace(trt, "Intact", "DRA")) %>% 
   mutate(hood = if_else(str_detect(trt, "Open"), "Open", "Hood")) %>% 
+  mutate(distance_m = round(distance_m, 1)) %>% 
   ggplot(aes(x = fct_reorder(trt, distance_m), 
              y = distance_m,
              label = distance_m, color = trt, shape = hood)) +
   geom_point(size = 3, stroke = 1) +
+  geom_text_repel(
+                    size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 545) +
   scale_shape_manual(values = c(16, 1)) +
   geom_segment(aes(x= trt, xend= trt, y=0, yend=distance_m), size = 2) +
   coord_flip() +
   scale_color_viridis_d(option = "H") + 
   labs(y = "Predicted distance (m)", x = NULL) +
   ylim(0,60) +
-  theme_few() +
-  theme(legend.position = "none")  
+  theme_few(base_family = "lato") +
+  theme(legend.position = "none",
+        legend.text = element_markdown(size = 20),
+        legend.background = element_blank(),
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25)) 
 c
 ```
 
@@ -523,22 +546,27 @@ figs <- fig2 %>%
               alpha = 0.3, color = NA) +
   facet_wrap(~ trt, ncol = 3) +
   scale_shape_manual(values = c(16, 1)) + 
-  theme_few() +
-  geom_label(aes(label = formula), x = 30, y = 20, color = "white") +
+  theme_few(base_family = "lato") +
+  geom_label(aes(label = formula), x = 30, y = 20, color = "white", size = 10) +
   labs(x = "Distance (m)", 
        y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
   theme(legend.position = "none",
+        legend.text = element_markdown(size = 20),
+        legend.background = element_blank(),
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25),
         strip.background = element_blank(),
         strip.text = element_textbox(
-          size = 12,
+          size = 30,
           color = "white", 
           fill = "#494949", 
           box.color = "#282728",
           halign = 0.5, linetype = 1, r = unit(5, "pt"), width = unit(1, "npc"),
           padding = margin(2, 0, 1, 0), 
-          margin = margin(3, 3, 3, 3))) +
-  ggsave("Figure 2.png", width = 6, height = 9)
-figs
+          margin = margin(3, 3, 3, 3))) 
+
+
+ggsave("Figure 2.png", width = 6, height = 9)
 ```
 
 ### AUC
@@ -622,20 +650,34 @@ summary(epred3$emmeans, point.est = mean, type = "response")
 
 ```{r}
 epred3$emmeans %>% as_tibble() %>% 
-  left_join(auc_data1) %>% 
+  mutate(sprayer = if_else(str_detect(trt, "Open"), "Open", "Hood")) %>% 
+  mutate(emmean = round(emmean, 1)) %>% 
   ggplot(aes(x = fct_reorder(trt, emmean), y = emmean,
-             color = trt, shape = sprayer)) +
+             color = trt, shape = sprayer, label = emmean)) +
   geom_point(size = 3) +
   geom_jitter(data = auc_data %>% 
                 rename(emmean = auc), alpha = 0.02) +
   scale_color_viridis_d(option = "H") +
+  geom_text_repel(
+                    size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 545) +
   coord_flip() +
   scale_shape_manual(values = c(16, 1)) +
   geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.2) +
   scale_y_continuous(breaks = c(0, 50, 100, 150, 200, 250)) +
-  theme_few() +
+  theme_few(base_family = "lato") +
   labs(x = NULL, y = "Area under the curve") +
-  theme(legend.position = "none") -> figE
+  theme(legend.position = "none",
+        legend.text = element_markdown(size = 20),
+        legend.background = element_blank(),
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25)) -> figE
 figE
 ```
 
@@ -658,9 +700,11 @@ estimate_contrasts(auc_model, test = "bf") %>%
 
 
 ```{r}
-c + figE + plot_annotation(tag_levels = 'A') -> figU
+c + figE +
+  plot_annotation(tag_levels = 'A') & 
+  theme(plot.tag = element_text(size = 35, hjust = 0, vjust = 0)) -> figU
 
-ggsave("Figure 3.png", width = 10, height = 5)
+ggsave("Figure 3.png", width = 8, height = 4)
 ```
 
 
