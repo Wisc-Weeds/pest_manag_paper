@@ -30,37 +30,6 @@ readxl::read_excel("droplet_size_data.xlsx") %>%
 
 # dv10
 
-
-```{r eval= FALSE}
-model10 <- brm(`dv10` ~ 1,
-                  family = hurdle_gamma(link = "log", 
-                                        link_shape = "log", 
-                                        link_hu = "logit"),
-                  data = droplet, save_pars = save_pars(all = TRUE))
-
-model11 <- brm(`dv10` ~ solution,
-                  family = hurdle_gamma(link = "log", 
-                                        link_shape = "log", 
-                                        link_hu = "logit"),
-                  data = droplet, save_pars = save_pars(all = TRUE))
-
-model12 <- brm(`dv10` ~ solution + nozzle,
-                  family = hurdle_gamma(link = "log", 
-                                        link_shape = "log", 
-                                        link_hu = "logit"),
-                  data = droplet, save_pars = save_pars(all = TRUE))
-
-model13 <- brm(`dv10` ~ solution * nozzle,
-                  family = hurdle_gamma(link = "log", 
-                                        link_shape = "log", 
-                                        link_hu = "logit"),
-                  data = droplet, save_pars = save_pars(all = TRUE))
-```
-
-
-
-# dv50
-
 ```{r message = FALSE}
 model13 <- brm(`dv10` ~ solution * nozzle,
                   family = hurdle_gamma(link = "log", 
@@ -73,7 +42,7 @@ model13 <- brm(`dv10` ~ solution * nozzle,
  
 
 ```{r}
-library(bayestestR)
+#library(bayestestR)
 #bayesfactor_models(model11, model12, model13, denominator = model10)
 # There are extreme evidence for model13 (interaction)
 ```
@@ -109,22 +78,6 @@ write_csv(x = bf_dv10, file = "bf_dv10.csv")
 
 
 ```{r}
-model21 <- brm(`dv50` ~ solution,
-                  family = hurdle_gamma(link = "log", 
-                                        link_shape = "log", 
-                                        link_hu = "logit"),
-               warmup = 1000, iter = 2000, chains = 4,
-               prior = set_prior("student_t(0.5, 1, 2)", class = "b"),
-                  data = droplet, save_pars = save_pars(all = TRUE))
-
-model22 <- brm(`dv50` ~ solution + nozzle,
-                  family = hurdle_gamma(link = "log", 
-                                        link_shape = "log", 
-                                        link_hu = "logit"),
-               warmup = 1000, iter = 2000, chains = 4,
-               prior = set_prior("student_t(0.5, 1, 2)", class = "b"),
-                  data = droplet, save_pars = save_pars(all = TRUE))
-
 model23 <- brm(`dv50` ~ solution * nozzle,
                   family = hurdle_gamma(link = "log", 
                                         link_shape = "log", 
@@ -136,7 +89,7 @@ model23 <- brm(`dv50` ~ solution * nozzle,
 
 ```{r}
 # model comparison
-bayesfactor_models(model22, model23, denominator = model21)
+#bayesfactor_models(model22, model23, denominator = model21)
 ```
 
 
@@ -338,6 +291,8 @@ emm %>%
 emmeans4$emmeans %>% as_tibble() -> em4
 emmeans5$emmeans %>% as_tibble() -> em5
 ```
+
+
 ```{r}
 droplet %>% 
   unite("trt", c("solution", "nozzle"), sep = "-") %>% 

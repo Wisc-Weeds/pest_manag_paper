@@ -14,8 +14,21 @@ library(lme4)
 library(multcomp)
 library(lmerTest)
 library(car)
-library(brms)
+library(ggthemes)
+library(ggrepel)
+library(ggtext)
+library(patchwork)
 ```
+
+```{r}
+library(extrafont)
+library(showtext)
+showtext_auto()
+font_add_google("Lato", ## name of Google font
+                "lato")  ## name that will be used in R
+font_add_google("Roboto", "roboto")
+```
+
 
 ```{r}
 readxl::read_excel("droplet_data.xlsx")
@@ -30,7 +43,11 @@ readxl::read_excel("droplet_size_data.xlsx") %>%
   mutate(nozzle = fct_recode(nozzle, 
                              "ULD12003" = "ULD11003")) %>% 
   mutate(x200 = x200/100) %>% 
-  mutate(rep = row_number()) -> droplet
+  mutate(rep = row_number()) %>% 
+  mutate(solution = str_replace_all(solution, "Intact", "DRA")) %>% 
+  group_by(solution, nozzle) %>% 
+  mutate(nozzle = str_remove_all(nozzle, '[0-9]+')) %>% 
+  unite("trt", c(solution, nozzle), sep = "-", remove = FALSE) -> droplet
 ```
 
 # DV10
@@ -54,7 +71,8 @@ emmeans1 <- emmeans(model1, ~ nozzle * solution, type = "response")
 
 ```{r}
 cld1 <- cld(emmeans1, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
-  as_tibble()
+  as_tibble() %>% 
+  mutate(type = "Dv10")
 cld1
 ```
 
@@ -80,7 +98,9 @@ emmeans2 <- emmeans(model2, ~ nozzle * solution, type = "response")
 
 ```{r}
 cld2 <- cld(emmeans2, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
-  as_tibble()
+  as_tibble() %>% 
+  mutate(type = "Dv50")
+  
 cld2
 ```
 
@@ -100,15 +120,100 @@ Anova(model3)
 
 
 ```{r}
-emmeans3 <- emmeans(model3, ~ nozzle * solution, type = "response")
+emmeans3 <- emmeans(model3, ~ nozzle * solution, cont="pairwise", type = "response")
 ```
 
 
 ```{r}
-cld3 <- cld(emmeans3, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
-  as_tibble()
+cld3 <- cld(emmeans3$emmeans, alpha=0.05, Letters=letters, 
+            adjust="none", reversed = TRUE) %>% 
+  as_tibble() %>% 
+  mutate(type = "Dv90")
 cld3
 ```
+
+
+```{r}
+cld1 %>% 
+  bind_rows(cld2) %>% 
+  bind_rows(cld3) %>% 
+  group_by(solution, nozzle) %>% 
+  mutate(nozzle = str_remove_all(nozzle, '[0-9]+')) %>% 
+  unite("trt", c(solution, nozzle), sep = "-") %>% 
+  mutate(response = round(response, 1)) -> dv
+```
+
+```{r}
+library(scales)
+show_col(brewer_pal(palette = "Set1")(5))
+show_col(wsj_pal()(9))
+```
+```{r}
+dv
+droplet %>% 
+  mutate(solution = str_replace_all(solution, "Intact", "DRA")) %>%
+  pivot_longer(cols = c("dv10", "dv50", "dv90"), names_to = "type",
+                             values_to = "dv") %>% 
+  mutate(type = str_to_title(type)) -> droplet1
+```
+
+
+
+```{r}
+dv %>% 
+  ggplot(aes(x = fct_reorder(trt, response), 
+             y = response, 
+             color = trt, 
+             shape = type)) +
+  geom_point(size = 2, position = position_dodge2(width = 0.4)) +
+  geom_linerange(aes(ymin = asymp.LCL, ymax = asymp.UCL),
+                 position = position_dodge2(width = 0.4), 
+                 size = 1.3) +
+  geom_jitter(data = droplet1 %>% 
+                rename(response = dv), 
+                position = position_dodge2(width = 0.4),
+              mapping = aes(color = trt, shape = type), alpha = 0.1, size = 2) +
+  coord_flip() +
+  geom_text_repel(aes(label = response, 
+                         x = trt, color = trt, shape = type),
+                    size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 455) +
+#  annotate("text", x = 6, y = 300, label = "Dv10", size = 10,
+#           color = "#E41A1C", fontface = "bold") +
+#  annotate("text", x = 5.5, y = 800, label = "Dv50", size = 10,
+#           color = "#377eb8", fontface = "bold") +
+#  annotate("text", x = 4.5, y = 1250, label = "Dv90", size = 10, 
+#           color = "#4daf4a", fontface = "bold") +
+#  annotate("text", x = 1.2, y = 820, 
+#           label = "There are differences \namong all pairwise trt \ncomparisons within \neach Dv (P <.0001)", size = 7.5, hjust = 0, lineheight = 0.3,
+#           color = 1, fontface = "italic") +
+  labs(x = NULL, y = "Droplet size (µm)", color = NULL, shape = NULL) +
+  scale_color_viridis_d(option = "H") +
+  scale_y_continuous(limits = c(0, 1500), breaks = seq(0, 1500, 300)) +
+  scale_shape_manual(values = c(8,9,10)) +
+  theme_few(base_family = "lato") + 
+  theme(legend.position = c(0.8, 0.2),
+        legend.text = element_markdown(size = 20),
+        legend.background = element_blank(),
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25)) +
+  guides(color = "none") -> fig1
+```
+
+
+
+
+
+
+
+
+
 
 # RS
 
@@ -126,14 +231,50 @@ Anova(model4)
 
 
 ```{r}
-emmeans4 <- emmeans(model4, ~ nozzle * solution, type = "response")
+emmeans4 <- emmeans(model4, ~ nozzle * solution, cont = "pairwise", type = "response")
 ```
 
 
 ```{r}
-cld4 <- cld(emmeans4, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
-  as_tibble()
+cld4 <- cld(emmeans4$emmeans, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
+  as_tibble() %>% 
+  mutate(solution = str_replace_all(solution, "Intact", "DRA")) %>% 
+  group_by(solution, nozzle) %>% 
+  mutate(nozzle = str_remove_all(nozzle, '[0-9]+')) %>% 
+  unite("trt", c(solution, nozzle), sep = "-") %>% 
+  mutate(response = round(response, 2))
 cld4
+```
+
+```{r}
+cld4 %>% 
+  ggplot(aes(x = fct_reorder(trt, response), y = response, color = trt)) +
+  geom_point(size = 2, position = position_dodge2(width = 0.4)) +
+  geom_linerange(aes(ymin = asymp.LCL, ymax = asymp.UCL),
+                 position = position_dodge2(width = 0.4), size = 1.3) +
+  coord_flip() +
+  geom_jitter(data = droplet1 %>% 
+                rename(response = rs), 
+              mapping = aes(color = trt), alpha = 0.1, size = 2) +
+  geom_text_repel(aes(label = response, 
+                         x = trt),
+                    size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 455) +
+  annotate("text", x = 5, y = 0.1, label = "There are differences \namong all pairwise trt  \ncomparisons (P <.0001) \nin figures A, B and C", size = 9, hjust = 0, lineheight = 0.3,
+           color = 1, fontface = "italic") +
+  labs(x = NULL, y = "Relative spam", color = NULL) +
+  scale_color_viridis_d(option = "H") +
+  scale_y_continuous(limits = c(0, 1.2), breaks = seq(0, 1.2, 0.2)) +
+  theme_few(base_family = "lato") + 
+  theme(legend.position = "none",
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25)) -> fig2
 ```
 
 
@@ -160,11 +301,53 @@ emmeans5 <- emmeans(model5, ~ nozzle * solution, type = "response")
 
 ```{r}
 cld5 <- cld(emmeans5, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE) %>% 
-  as_tibble() 
+  as_tibble() %>% 
+  mutate(solution = str_replace_all(solution, "Intact", "DRA")) %>% 
+  group_by(solution, nozzle) %>% 
+  mutate(nozzle = str_remove_all(nozzle, '[0-9]+')) %>% 
+  unite("trt", c(solution, nozzle), sep = "-") %>% 
+  mutate(emmean = round(emmean,3))
 cld5
 ```
 
+```{r}
+cld5 %>% 
+  ggplot(aes(x = fct_reorder(trt, emmean*100), y = emmean*100, color = trt)) +
+  geom_point(size = 2, position = position_dodge2(width = 0.4)) +
+  geom_linerange(aes(ymin = asymp.LCL*100, ymax = asymp.UCL*100),
+                 position = position_dodge2(width = 0.4), size = 1.3) +
+  coord_flip() +
+  geom_jitter(data = droplet1 %>% 
+                rename(emmean = x200), 
+              mapping = aes(color = trt), alpha = 0.1, size = 2) +
+  geom_text_repel(aes(label = emmean*100, 
+                         x = trt),
+                    size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 455) +
+#  annotate("text", x = 2, y = 3, label = "There are differences \namong all pairwise trt \ncomparisons (P <.0001)", size = 9, hjust = 0, lineheight = 0.3,
+#           color = 1, fontface = "italic") +
+  labs(x = NULL, y = "% drifable fines < 200 µm", color = NULL) +
+  scale_color_viridis_d(option = "H") +
+  scale_y_continuous(limits = c(0, 8), breaks = seq(0, 8, 2)) +
+  theme_few(base_family = "lato") + 
+  theme(legend.position = "none",
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25)) -> fig3
+```
 
 
+```{r}
+fig1 + fig2 + fig3 +
+  plot_annotation(tag_levels = 'A') & 
+  theme(plot.tag = element_text(size = 25, hjust = 0, vjust = 0))
+
+ggsave("Figure 4.png", width = 9, height = 3)
+```
 
 

@@ -34,9 +34,9 @@ library(agricolae)
 library(extrafont)
 library(showtext)
 showtext_auto()
-font_add_google("Playfair Display", ## name of Google font
-                "Playfair")  ## name that will be used in R
-font_add_google("Bangers", "Bangers")
+font_add_google("Lato", ## name of Google font
+                "lato")  ## name that will be used in R
+font_add_google("Roboto", "roboto")
 
 ```
 
