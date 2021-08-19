@@ -122,9 +122,14 @@ labels = c("N","","NE","", "E", "", "SE","",
                       drop = FALSE) +
     theme_few() +
     theme(axis.title.x = element_blank(), 
+          axis.title.y = element_markdown(size = 32),
+          axis.text = element_markdown(size = 28),
+          legend.text = element_markdown(size = 28),
+          panel.grid = element_line(color = "gray96"),
           strip.background = element_blank(),
           strip.text = element_textbox(
-          size = 12,
+          size = 32,
+          face = "bold",
           color = "white", 
           fill = "#494949", 
           box.color = "#282728",
@@ -132,14 +137,15 @@ labels = c("N","","NE","", "E", "", "SE","",
           padding = margin(2, 0, 1, 0), 
           margin = margin(3, 3, 3, 3)),
           legend.position = "bottom",
-          legend.title = element_markdown(size = 9),
+          legend.title = element_markdown(size = 32),
           legend.key.size = unit(1,"line"),
           legend.direction = "horizontal",
-          plot.title = element_markdown(size = 12, color = "#282728")) +
+          plot.title = element_blank(),
+          plot.margin=grid::unit(c(-10,2,-10,2), "mm")) +
     scale_y_continuous(labels = percent_format(suffix = "", accuracy = 1),
                        expand = c(0,0)) + 
     labs(y = "Frequency (%)", title = NULL) +
-    guides(fill = guide_legend(title.position="top"))
+    guides(fill = guide_legend(title.position="left"))
   # adjust axes if required
   if (!is.na(countmax)){
     p.windrose <- p.windrose +
@@ -158,8 +164,8 @@ labels = c("N","","NE","", "E", "", "SE","",
 plot <- plot.windrose(data = data,
               spd = "spd",
               dir = "dir") 
-plot +  facet_wrap(~location) +  
-    ggsave("wind.png", units="in")
+plot +  facet_wrap(~location)  
+    ggsave("wind.png", height = 4, width = 9)
 ```
 
 

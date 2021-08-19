@@ -43,9 +43,14 @@ new_dt <- read_csv("deposition.csv")
 
 ```{r}
 new_dt %>% 
+  mutate(solution= str_replace(solution, "Water", "")) %>% 
   unite("trt", c("solution", "sprayer", "nozzle"), 
-        sep = "-", remove = FALSE) -> new_dt 
+        sep = "-", remove = FALSE) %>% 
+  mutate(trt = str_replace(trt, "Intact", "DRA")) %>% 
+  mutate(trt = str_remove(trt, "^[^a-zA-Z]+")) -> new_dt  
 ```
+
+
 
 ## Deposition inswath
 
@@ -53,8 +58,7 @@ new_dt %>%
 ### Filter deposition dataset inswath
 inswath <-  new_dt %>% 
   filter(type == "inswath") %>% 
-  filter(!is.na(deposition)) %>% 
-  mutate(trt = str_replace(trt, "Intact", "DRA")) 
+  filter(!is.na(deposition))
 ```
 
 ```{r}
@@ -116,7 +120,7 @@ summary(epred$emmeans, point.est = mean)
 ```{r}
 #https://easystats.github.io/bayestestR/articles/bayes_factors.html
 #https://www.statisticshowto.com/bayes-factor-definition/
-groups <- emmeans(model1, ~trt)
+groups <- emmeans(model1, ~ trt)
 group_diff <- pairs(groups)
 (groups_all <- rbind(groups, group_diff))
 
@@ -125,12 +129,25 @@ group_diff <- pairs(groups)
 library(modelbased)
 estimate_contrasts(model1, test = "bf")
 ```
+```{r}
+#https://easystats.github.io/blog/posts/bayestestr_emmeans/
+inswath_main <- pairs(emmeans(model1, ~ trt))
+
+describe_posterior(inswath_main,
+                   centrality = "mean", dispersion = TRUE,
+                   ci = .95, ci_method = "hdi",
+                   test = c("bayesfactor"),
+                   bf_prior = model1) %>% 
+  tibble() -> inswath_bf
+readr::write_csv(path = "../supp_file/data/inswath_bf.csv", x = inswath_bf)
+```
+
 
 ```{r}
-estimate_contrasts(model1, test = "bf") -> inswath_bf
-inswath_bf %>% 
-  tibble() -> inswath_bf
-#readr::write_csv(path = "inswath_bf.csv", x = inswath_bf)
+#estimate_contrasts(model1, test = "bf") -> inswath_bf
+#inswath_bf %>% 
+#  tibble() -> inswath_bf
+#readr::write_csv(path = "../supp_file/data/inswath_bf.csv", x = inswath_bf)
 ```
 
 
@@ -157,11 +174,13 @@ em %>% as_tibble() %>%
   scale_shape_manual(values = c(16, 1)) +
   geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.2) +
   ylim(0, 2000) +
-  theme_few(base_family = "lato") +
-  labs(x = NULL, y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
+  theme_few() +
+  labs(x = NULL, 
+       y = expression(paste("Spray particle deposition (\u03B7L/cm"^"2",")"))
+       ) +
   theme(legend.position = "none",
         axis.title = element_text(size = 30),
-        axis.text = element_text(size = 25)) -> figA
+        axis.text = element_markdown(size = 25)) -> figA
 
   ggsave("Figure 1.png", width = 5, height = 4)
 ```
@@ -232,7 +251,7 @@ library(modelbased)
 estimate_contrasts(model2, test = "bf") -> upwind_bf
 upwind_bf %>% 
   tibble() -> upwind_bf
-#readr::write_csv(path = "upwind_bf.csv", x = upwind_bf)
+readr::write_csv(path = "../supp_file/data/upwind_bf.csv", x = upwind_bf)
 ```
 
 ```{r eval = FALSE}
@@ -455,7 +474,7 @@ c <- distance_final1 %>%
                     position = position_dodge2(width = 0.4),
                     seed = 545) +
   scale_shape_manual(values = c(16, 1)) +
-  geom_segment(aes(x= trt, xend= trt, y=0, yend=distance_m), size = 2) +
+  geom_segment(aes(x= trt, xend= trt, y=0, yend=distance_m), size = 1) +
   coord_flip() +
   scale_color_viridis_d(option = "H") + 
   labs(y = "Predicted distance (m)", x = NULL) +
@@ -473,6 +492,7 @@ c
 fig <- data_dw2 %>% 
   dplyr::select(trt, model)
 ```
+
 
 ```{r warning=FALSE, message = FALSE}
 fig_model <- function(model){
@@ -532,8 +552,13 @@ fig2 <- fig1 %>%
 
 ### Back-transformed linear models
 
+```{r}
+loc <- tibble(trt = "DRA-Open-TTI")
+```
+
+
 ```{r include=TRUE}
-figs <- fig2 %>% 
+fig2 %>% 
   mutate(trt = str_replace(trt, "Intact", "DRA")) %>% 
   mutate(hood = if_else(str_detect(trt, "Open"), "Open", "Hood")) %>% 
   ggplot(aes(x = distance_m, y = predicted, color = trt, 
@@ -546,18 +571,33 @@ figs <- fig2 %>%
               alpha = 0.3, color = NA) +
   facet_wrap(~ trt, ncol = 3) +
   scale_shape_manual(values = c(16, 1)) + 
-  theme_few(base_family = "lato") +
-  geom_label(aes(label = formula), x = 30, y = 20, color = "white", size = 10) +
+  theme_few() +
+  geom_text(data = loc, mapping = aes(x = 10, y = 20), 
+            label = "Intercept", inherit.aes = FALSE, size = 10) +
+  geom_text(data = loc, mapping = aes(x = 55, y = 10), 
+            label = "Slope", inherit.aes = FALSE, size = 10) +
+  geom_label(aes(label = formula), x = 30, y = 15, color = "white", size = 12) +
+  geom_curve(data = loc, mapping = aes(x = 25, y = 17,
+             xend = 20, yend = 20),
+             arrow = arrow(length = unit(0.07, "inch")), 
+             color = 1,
+             size = 0.4, curvature = 0.3, inherit.aes = FALSE) +
+  geom_curve(data = loc, mapping = aes(x = 42, y = 13,
+             xend = 47, yend = 10),
+             arrow = arrow(length = unit(0.07, "inch")), 
+             color = 1,
+             size = 0.4, curvature = 0.3, inherit.aes = FALSE) +
   labs(x = "Distance (m)", 
        y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
   theme(legend.position = "none",
         legend.text = element_markdown(size = 20),
         legend.background = element_blank(),
-        axis.title = element_markdown(size = 30),
-        axis.text = element_markdown(size = 25),
+        axis.title = element_markdown(size = 32),
+        axis.text = element_markdown(size = 28),
         strip.background = element_blank(),
         strip.text = element_textbox(
-          size = 30,
+          size = 32,
+          face = "bold",
           color = "white", 
           fill = "#494949", 
           box.color = "#282728",
@@ -606,8 +646,7 @@ auc_data <- id_df1 %>%
 
 ```{r}
 auc_data1 <- auc_data %>% 
-  filter(distance_m == 1) %>% 
-  mutate(trt = str_replace(trt, "Intact", "DRA")) 
+  filter(distance_m == 1)
 ```
 
 ```{r}
@@ -671,7 +710,7 @@ epred3$emmeans %>% as_tibble() %>%
   scale_shape_manual(values = c(16, 1)) +
   geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.2) +
   scale_y_continuous(breaks = c(0, 50, 100, 150, 200, 250)) +
-  theme_few(base_family = "lato") +
+  theme_few() +
   labs(x = NULL, y = "Area under the curve") +
   theme(legend.position = "none",
         legend.text = element_markdown(size = 20),
@@ -680,21 +719,32 @@ epred3$emmeans %>% as_tibble() %>%
         axis.text = element_markdown(size = 25)) -> figE
 figE
 ```
+```{r}
+#https://easystats.github.io/blog/posts/bayestestr_emmeans/
+auc_main <- pairs(emmeans(auc_model, ~ trt))
 
+describe_posterior(auc_main,
+                   centrality = "mean", dispersion = TRUE,
+                   ci = .95, ci_method = "hdi",
+                   test = c("bayesfactor"),
+                   bf_prior = auc_model) %>% 
+  tibble() -> auc_bf
+readr::write_csv(path = "../supp_file/data/auc_bf.csv", x = auc_bf)
+```
 
 ```{r}
-estimate_contrasts(auc_model, test = "bf") -> auc_bf
-auc_bf %>% 
-  tibble() -> auc_bf
-readr::write_csv(path = "auc_bf.csv", x = auc_bf)
+#estimate_contrasts(auc_model, test = "bf") -> auc_bf
+#auc_bf %>% 
+#  tibble() -> auc_bf
+#readr::write_csv(path = "../supp_file/data/auc_bf.csv", x = auc_bf)
 ```
 
 
 
 ```{r eval = FALSE}
-library(modelbased)
-estimate_contrasts(auc_model, test = "bf") %>% 
-  kableExtra::kable()
+#library(modelbased)
+#estimate_contrasts(auc_model, test = "bf") %>% 
+#  kableExtra::kable()
 ```
 
 

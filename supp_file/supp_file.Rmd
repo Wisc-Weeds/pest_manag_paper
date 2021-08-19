@@ -3,6 +3,8 @@ title: "Supplemental File"
 author: "Maxwel Coura Oliveira"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
+  html_document:
+    df_print: paged
   pdf_document: default
 ---
 
@@ -26,7 +28,7 @@ library(kableExtra)
 
 
 ```{r}
-read_csv("bf.csv") %>% 
+read_csv("data/bf.csv") %>% 
   kableExtra::kable(., booktabs = T, longtable = T, 
                     caption = "Bayes Factor interpretation",
                     linesep = "") %>%
@@ -37,7 +39,7 @@ read_csv("bf.csv") %>%
 
 
 ```{r echo=FALSE}
-read_csv("inswath_bf.csv") %>% 
+read_csv("data/inswath_bf.csv") %>% 
   mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
   mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 
   kableExtra::kable(., booktabs = T, longtable = T, 
@@ -51,7 +53,7 @@ read_csv("inswath_bf.csv") %>%
 ## AUC Bayes Factor contrasts
 
 ```{r echo=FALSE}
-read_csv("auc_bf.csv") %>% 
+read_csv("data/auc_bf.csv") %>% 
   mutate_if(is.double, ~round(., 2)) %>% 
   mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
   mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 

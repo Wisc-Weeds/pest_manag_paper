@@ -13,6 +13,7 @@ library(bayestestR)
 library(modelbased)
 library(ggtext)
 library(patchwork)
+library(ggrepel)
 library(ggthemes)
 ```
 
@@ -62,15 +63,28 @@ summary(em, point.est = mean)
 ```
 
 ```{r}
-emmeans1 <- emmeans(model13, ~ nozzle * solution, cont="pairwise", type = "response")
+emmeans1 <- emmeans(model13, ~ nozzle * solution, 
+                    cont="pairwise", type = "response")
 ```
 
+```{r}
+#https://easystats.github.io/blog/posts/bayestestr_emmeans/
+dv10_main <- pairs(emmeans(model13, ~ solution * nozzle))
+
+describe_posterior(dv10_main,
+                   centrality = "mean", dispersion = TRUE,
+                   ci = .95, ci_method = "hdi",
+                   test = c("bayesfactor"),
+                   bf_prior = model13) %>% 
+  tibble() -> dv10_bf
+readr::write_csv(path = "../supp_file/data/bf_dv10.csv", x = dv10_bf)
+```
 
 ```{r}
-options(scipen = 999)
-estimate_contrasts(model13, test = "bf") %>% 
-  as_tibble() -> bf_dv10
-write_csv(x = bf_dv10, file = "bf_dv10.csv")
+#options(scipen = 999)
+#estimate_contrasts(model13, test = "bf") %>% 
+#  as_tibble() -> bf_dv10
+#write_csv(x = bf_dv10, file = "bf_dv10.csv")
 ```
 
 
@@ -104,7 +118,21 @@ emmeans2 <- emmeans(model23, ~ nozzle * solution, cont="pairwise", type = "respo
 ```
 
 ```{r}
-estimate_contrasts(model23, test = "bf")
+#https://easystats.github.io/blog/posts/bayestestr_emmeans/
+dv50_main <- pairs(emmeans(model23, ~ nozzle * solution))
+
+describe_posterior(dv50_main,
+                   centrality = "mean", dispersion = TRUE,
+                   ci = .95, ci_method = "hdi",
+                   test = c("bayesfactor"),
+                   bf_prior = model23) %>% 
+  tibble() -> dv50_bf
+readr::write_csv(path = "../supp_file/data/bf_dv50.csv", x = dv50_bf)
+```
+
+
+```{r}
+estimate_contrasts(model23, test = "bf", transform = "response")
 ```
 
 ```{r}
@@ -128,8 +156,16 @@ model33 <- brm(`dv90` ~ solution * nozzle,
 ```
 
 ```{r}
-# model comparison
-#bayesfactor_models(model32, model33, denominator = model31)
+#https://easystats.github.io/blog/posts/bayestestr_emmeans/
+dv90_main <- pairs(emmeans(model33, ~ nozzle * solution))
+
+describe_posterior(dv90_main,
+                   centrality = "mean", dispersion = TRUE,
+                   ci = .95, ci_method = "hdi",
+                   test = c("bayesfactor"),
+                   bf_prior = model33) %>% 
+  tibble() -> dv90_bf
+readr::write_csv(path = "../supp_file/data/bf_dv90.csv", x = dv90_bf)
 ```
 
 
@@ -184,14 +220,20 @@ emmeans4 <- emmeans(model43, ~ nozzle * solution, cont= "pairwise", type = "resp
 ```
 
 ```{r}
-estimate_contrasts(model43, test = "bf")
+rs_main <- pairs(emmeans(model43, ~ nozzle * solution))
+
+describe_posterior(rs_main,
+                   centrality = "mean", dispersion = TRUE,
+                   ci = .95, ci_method = "hdi",
+                   test = c("bayesfactor"),
+                   bf_prior = model43) %>% 
+  tibble() -> rs_bf
+readr::write_csv(path = "../supp_file/data/bf_rs.csv", x = rs_bf)
 ```
 
 
 # <200
 
-
-# RS
 
 ```{r}
 model53 <- brm(`x200` ~ solution * nozzle,
@@ -219,22 +261,18 @@ emmeans5 <- emmeans(model53, ~ nozzle * solution, cont= "pairwise", type = "resp
 
 
 ```{r}
-emmeans5$emmeans %>% 
-  as_tibble() %>% 
-  unite("trt", c("solution", "nozzle"), sep = " - ") %>% 
-  ggplot(aes(x = fct_reorder(trt, response), y = response*100)) +
-  geom_point() +
-  geom_linerange(aes(ymin = lower.HPD*100, ymax = upper.HPD*100)) +
-  coord_flip() +
-  theme_classic() +
-  labs(title = "<200 droptlet")
+duz_main <- pairs(emmeans(model53, ~ nozzle * solution))
+
+describe_posterior(duz_main,
+                   centrality = "mean", dispersion = TRUE,
+                   ci = .95, ci_method = "hdi",
+                   test = c("bayesfactor"),
+                   bf_prior = model53) %>% 
+  tibble() -> duz_bf
+readr::write_csv(path = "../supp_file/data/bf_duz.csv", x = duz_bf)
 ```
 
 
-
-```{r}
-estimate_contrasts(model53, test = "bf")
-```
 
 
 
@@ -243,12 +281,15 @@ emmeans1$emmeans %>% as_tibble() %>% mutate(type = "DV10") -> em1
 emmeans2$emmeans %>% as_tibble() %>% mutate(type = "DV50") -> em2
 emmeans3$emmeans %>% as_tibble() %>% mutate(type = "DV90") -> em3
 ```
--> emm
+
 ```{r}
 em1 %>% 
   bind_rows(em2) %>% 
   bind_rows(em3) %>% 
+  mutate(solution = str_replace(solution, "water", "")) %>% 
   unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  mutate(trt = str_remove(trt, "^[^a-zA-Z]+")) %>%
+  mutate(trt = str_remove(trt, "Water-")) %>% 
   mutate(type = fct_recode(type,
                           "D<sub>v10</sub>" = "DV10",
                           "D<sub>v50</sub>" = "DV50",
@@ -256,96 +297,183 @@ em1 %>%
 ```
 
 
+
 ```{r}
 droplet %>% 
   pivot_longer(3:5, names_to = "type", values_to = "response") %>%
   mutate(type = str_to_upper(type)) %>% 
   unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  mutate(trt = str_remove(trt, "^[^a-zA-Z]+")) %>%
   dplyr::select(-rs, -x200, -rep) %>% 
+  mutate(trt = str_remove(trt, "Water-")) %>% 
   mutate(type = fct_recode(type,
                           "D<sub>v10</sub>" = "DV10",
                           "D<sub>v50</sub>" = "DV50",
                           "D<sub>v90</sub>" = "DV90")) -> droplet1
 ```
-              
-                
+
+
 ```{r}
-library(ggthemes)
 emm %>% 
-  ggplot(aes(x = fct_reorder(trt, response), y = response, color = trt)) +
-  geom_point(size = 2) +
-  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.3) +
-  geom_jitter(data = droplet1, alpha = 0.1, size = 2) +
-  facet_grid(~ type) +
+  mutate(response = round(response, 1)) %>% 
+  ggplot(aes(x = fct_reorder(trt, response), 
+             y = response, 
+             color = trt, 
+             shape = type)) +
+  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD),
+                 position = position_dodge2(width = 0.4), 
+                 size = 1.3, alpha = 0.5) +
+  geom_point(size = 2, position = position_dodge2(width = 0.4)) +
+  geom_jitter(data = droplet1,
+                position = position_dodge2(width = 0.4),
+              mapping = aes(color = trt, shape = type), alpha = 0.1, size = 2) +
   coord_flip() +
-  labs(x = NULL, y = "Droplet size (µm)") +
-  scale_color_viridis_d(option = "C") +
+  geom_text_repel(aes(label = response, 
+                         x = trt, color = trt, shape = type),
+                    size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 455) +
+  labs(x = NULL, y = "Droplet size (µm)", color = NULL, shape = NULL) +
+  scale_color_viridis_d(option = "H") +
+  scale_y_continuous(limits = c(0, 1500), breaks = seq(0, 1500, 300)) +
+  scale_shape_manual(values = c(8,9,10)) +
   theme_few() + 
-  theme(strip.text = element_markdown(size = 12),
-        legend.position = "none") -> dv
+  theme(legend.position = c(0.85, 0.2),
+        legend.text = element_markdown(size = 20),
+        legend.background = element_blank(),
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25)) +
+  guides(color = "none") -> fig1
+
+ggsave("fig.png")
 ```
 
+```{r warning = FALSE}
+fig1 + fig2 + fig3 +
+  plot_annotation(tag_levels = 'A') & 
+  theme(plot.tag = element_text(size = 35, hjust = 0, vjust = 0))
+
+ggsave("Figure 5.png", width = 11, height = 4)
+```
+
+                
+
+
 
 
 ```{r}
-emmeans4$emmeans %>% as_tibble() -> em4
+emmeans4$emmeans %>% as_tibble() %>% 
+  mutate(solution = str_replace(solution, "Water", "")) %>% 
+  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+    mutate(trt = str_remove(trt, "^[^a-zA-Z]+")) -> em4
 emmeans5$emmeans %>% as_tibble() -> em5
 ```
 
 
 ```{r}
 droplet %>% 
+  mutate(solution = str_replace(solution, "Water", "")) %>% 
   unite("trt", c("solution", "nozzle"), sep = "-") %>% 
   dplyr::select(trt, rs) %>% 
+  mutate(trt = str_remove(trt, "^[^a-zA-Z]+")) %>%
   rename(response = rs) -> droplet2
 ```
 
 
 ```{r}
 em4 %>% 
-  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  mutate(response = round(response, 2)) %>% 
   ggplot(aes(x = fct_reorder(trt, response), y = response, color = trt)) +
-  geom_point(size = 2) +
-  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD), size = 1.3) +
-  geom_jitter(data = droplet2, alpha = 0.1, size = 2) +
+  geom_point(size = 2, position = position_dodge2(width = 0.4)) +
+  geom_linerange(aes(ymin = lower.HPD, ymax = upper.HPD),
+                 position = position_dodge2(width = 0.4), size = 1.3) +
   coord_flip() +
-  labs(x = NULL, y = "RS") +
-  scale_color_viridis_d(option = "C") +
+  geom_jitter(data = droplet2,
+              mapping = aes(color = trt), alpha = 0.1, size = 2) +
+  geom_text_repel(aes(label = response, 
+                         x = trt),
+                    size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 455) +
+#  annotate("text", x = 5, y = 0.1, label = "There are differences \namong all pairwise trt  \ncomparisons (P <.0001) \nin figures A, B and C", size = 9, hjust = 0, lineheight = 0.3,
+#           color = 1, fontface = "italic") +
+  labs(x = NULL, y = "Relative span", color = NULL) +
+  scale_color_viridis_d(option = "H") +
+  scale_y_continuous(limits = c(0, 1.2), breaks = seq(0, 1.2, 0.2)) +
   theme_few() + 
-  theme(strip.text = element_markdown(),
-        legend.position = "none") -> rs
+  theme(legend.position = "none",
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25)) -> fig2
 ```
+
+
+
+```{r}
+emmeans5$emmeans %>% as_tibble() %>% 
+  mutate(solution = str_replace(solution, "Water", "")) %>% 
+  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  mutate(trt = str_remove(trt, "^[^a-zA-Z]+")) -> em5
+```
+
 
 ```{r}
 droplet %>% 
+  mutate(solution = str_replace(solution, "Water", "")) %>% 
   unite("trt", c("solution", "nozzle"), sep = "-") %>% 
   dplyr::select(trt, x200) %>% 
-  rename(response = x200) -> droplet3
+  rename(response = x200) %>% 
+  mutate(trt = str_remove(trt, "^[^a-zA-Z]+")) -> droplet3
 ```
 
-
 ```{r}
-(
 em5 %>% 
-  unite("trt", c("solution", "nozzle"), sep = "-") %>% 
+  mutate(response = round(response, 4)) %>% 
   ggplot(aes(x = fct_reorder(trt, response*100), y = response*100, color = trt)) +
-  geom_point(size = 2) +
-  geom_linerange(aes(ymin = lower.HPD*100, ymax = upper.HPD*100), size = 1.3) +
-  geom_jitter(data = droplet3, alpha = 0.1, size = 2) +
+  geom_point(size = 2, position = position_dodge2(width = 0.4)) +
+  geom_linerange(aes(ymin = lower.HPD*100, ymax = upper.HPD*100),
+                 position = position_dodge2(width = 0.4), size = 1.3) +
   coord_flip() +
-  scale_y_continuous(breaks = c(0, 2, 4, 6, 8)) +
-  labs(x = NULL, y = "% drifable fines < 200 µm") +
-  scale_color_viridis_d(option = "C") +
+  geom_jitter(data = droplet2, 
+              mapping = aes(color = trt), alpha = 0.1, size = 2) +
+  geom_text_repel(aes(label = response*100, 
+                         x = trt),
+                    size = 8,
+                    force_pull = 0,
+                    direction = "y",
+                    point.padding = NA,
+                    min.segment.length = 14,
+                    vjust = 0.5,
+                    position = position_dodge2(width = 0.4),
+                    seed = 455) +
+#  annotate("text", x = 2, y = 3, label = "There are differences \namong all pairwise trt \ncomparisons (P <.0001)", size = 9, hjust = 0, lineheight = 0.3,
+#           color = 1, fontface = "italic") +
+  labs(x = NULL, y = "% driftable fines < 200 µm", color = NULL) +
+  scale_color_viridis_d(option = "H") +
+  scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, 2)) +
   theme_few() + 
-  theme(strip.text = element_markdown(),
-        legend.position = "none") -> x200
-)
+  theme(legend.position = "none",
+        axis.title = element_markdown(size = 30),
+        axis.text = element_markdown(size = 25)) -> fig3
 ```
 
-```{r}
-rs + x200 -> fig
-dv / fig -> fig1
 
-ggsave("Figure 4.png", width = 9, height = 6)
+
+
+```{r warning = FALSE}
+fig1 + fig2 + fig3 +
+  plot_annotation(tag_levels = 'A') & 
+  theme(plot.tag = element_text(size = 35, hjust = 0, vjust = 0))
+
+ggsave("Figure 5.png", width = 11, height = 4)
 ```
 

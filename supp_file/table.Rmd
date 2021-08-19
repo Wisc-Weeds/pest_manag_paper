@@ -31,7 +31,7 @@ $$\\[0.1in]$$
 ```{r}
 read_csv("data/bf.csv") %>% 
   reactable(., theme = fivethirtyeight(), 
-            filterable = TRUE,
+            filterable = FALSE,
             resizable = TRUE,
             searchable = FALSE,
             wrap = TRUE,
@@ -41,27 +41,24 @@ read_csv("data/bf.csv") %>%
 ```
 
 $$\\[0.1in]$$
-The treatment contrasts of inswath spray solution deposition are compared (Table 2). See the BF and make an interpretation based on Table 1. 
-
-$$\\[0.1in]$$
 
 ```{r}
-read_csv("data/inswath_bf.csv") %>% 
-  mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
-  mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 
-  dplyr::select(-"Std_Difference") %>% 
+read_csv("data/bf_dv10.csv") %>% 
+  mutate(Parameter = str_remove_all(Parameter, "\\(|\\)")) %>% 
+  mutate(log_BF = as.double(log_BF)) %>% 
+  rename(BF = log_BF) %>% 
+  mutate(BF = exp(BF)) %>% 
+  mutate(Parameter = str_remove_all(Parameter, "Water ")) %>% 
+  mutate_if(is.double, ~ round(., 2)) %>% 
   reactable(., theme = fivethirtyeight(),
             filterable = FALSE,
             resizable = TRUE,
             pagination = FALSE,
             wrap = TRUE,
-            groupBy = "Level1",
             searchable = FALSE,
             defaultPageSize = 20,
-            showSortable = TRUE,
+             showSortable = TRUE,
             columns = list(
-            Level1 = colDef(filterable = TRUE),
-            Level2 = colDef(filterable = TRUE),
             BF = colDef(
               #cell = #function(value) {
 #                if (value > 1) paste0("+", value) 
@@ -74,11 +71,217 @@ read_csv("data/inswath_bf.csv") %>%
                     "#e00000"
                   }
                 list(fontWeight = 600, color = color)}),
-            Difference = colDef(align = "center", 
+#            BF = colDef(align = "center",
+#                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
+#                                                         "red"))),
+            Parameter = colDef(align = "center", filterable = TRUE,
                                 cell = data_bars_pos_neg(., 
                                                          colors = c("#ff3030", "#1e90ff"))))) %>% 
-  add_title("Table 2. Treatment contrasts for inswath spray solution deposition. Bayes Factor is used to test contrast hypothesis", font_size = 15)
+  add_title("Table 2. Treatment contrasts for DV10. Bayes Factor is used to test contrast hypothesis", font_size = 15)
 ```
+
+
+```{r}
+read_csv("data/bf_dv10.csv") %>% 
+  mutate(Parameter = str_remove_all(Parameter, "\\(|\\)")) %>% 
+  mutate(log_BF = as.double(log_BF)) %>% 
+  rename(BF = log_BF) %>% 
+  mutate(BF = exp(BF)) %>% 
+  mutate_if(is.double, ~ round(., 2)) %>% 
+  mutate(Parameter = str_remove_all(Parameter, "Water ")) %>% 
+  reactable(., theme = fivethirtyeight(),
+            filterable = FALSE,
+            resizable = TRUE,
+            pagination = FALSE,
+            wrap = TRUE,
+            searchable = FALSE,
+            defaultPageSize = 20,
+             showSortable = TRUE,
+            columns = list(
+            BF = colDef(
+              #cell = #function(value) {
+#                if (value > 1) paste0("+", value) 
+#                else value
+#                },
+              style = function(value) {
+                color <- if (value > 1) {
+                  "#008000"
+                  } else if (value < 1) {
+                    "#e00000"
+                  }
+                list(fontWeight = 600, color = color)}),
+#            BF = colDef(align = "center",
+#                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
+#                                                         "red"))),
+            Parameter = colDef(align = "center", filterable = TRUE,
+                                cell = data_bars_pos_neg(., 
+                                                         colors = c("#ff3030", "#1e90ff"))))) %>% 
+  add_title("Table 3. Treatment contrasts for DV50. Bayes Factor is used to test contrast hypothesis", font_size = 15)
+```
+
+
+
+```{r}
+read_csv("data/bf_dv10.csv") %>% 
+  mutate(Parameter = str_remove_all(Parameter, "\\(|\\)")) %>% 
+  mutate(log_BF = as.double(log_BF)) %>% 
+  rename(BF = log_BF) %>% 
+  mutate(BF = exp(BF)) %>% 
+  mutate_if(is.double, ~ round(., 2)) %>% 
+  mutate(Parameter = str_remove_all(Parameter, "Water ")) %>% 
+  reactable(., theme = fivethirtyeight(),
+            filterable = FALSE,
+            resizable = TRUE,
+            pagination = FALSE,
+            wrap = TRUE,
+            searchable = FALSE,
+            defaultPageSize = 20,
+             showSortable = TRUE,
+            columns = list(
+            BF = colDef(
+              #cell = #function(value) {
+#                if (value > 1) paste0("+", value) 
+#                else value
+#                },
+              style = function(value) {
+                color <- if (value > 1) {
+                  "#008000"
+                  } else if (value < 1) {
+                    "#e00000"
+                  }
+                list(fontWeight = 600, color = color)}),
+#            BF = colDef(align = "center",
+#                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
+#                                                         "red"))),
+            Parameter = colDef(align = "center", filterable = TRUE,
+                                cell = data_bars_pos_neg(., 
+                                                         colors = c("#ff3030", "#1e90ff"))))) %>% 
+  add_title("Table 4. Treatment contrasts for DV90. Bayes Factor is used to test contrast hypothesis", font_size = 15)
+```
+
+
+
+```{r}
+read_csv("data/bf_rs.csv") %>% 
+  mutate(Parameter = str_remove_all(Parameter, "\\(|\\)")) %>% 
+  mutate(log_BF = as.double(log_BF)) %>% 
+  rename(BF = log_BF) %>% 
+  mutate(BF = exp(BF)) %>% 
+  mutate_if(is.double, ~ round(., 2)) %>% 
+  mutate(Parameter = str_remove_all(Parameter, "Water ")) %>% 
+  reactable(., theme = fivethirtyeight(),
+            filterable = FALSE,
+            resizable = TRUE,
+            pagination = FALSE,
+            wrap = TRUE,
+            searchable = FALSE,
+            defaultPageSize = 20,
+             showSortable = TRUE,
+            columns = list(
+            BF = colDef(
+              #cell = #function(value) {
+#                if (value > 1) paste0("+", value) 
+#                else value
+#                },
+              style = function(value) {
+                color <- if (value > 1) {
+                  "#008000"
+                  } else if (value < 1) {
+                    "#e00000"
+                  }
+                list(fontWeight = 600, color = color)}),
+#            BF = colDef(align = "center",
+#                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
+#                                                         "red"))),
+            Parameter = colDef(align = "center", filterable = TRUE,
+                                cell = data_bars_pos_neg(., 
+                                                         colors = c("#ff3030", "#1e90ff"))))) %>% 
+  add_title("Table 5. Treatment contrasts for relative span. Bayes Factor is used to test contrast hypothesis", font_size = 15)
+```
+
+
+
+```{r}
+read_csv("data/bf_duz.csv") %>% 
+  mutate(Parameter = str_remove_all(Parameter, "\\(|\\)")) %>% 
+  mutate(log_BF = as.double(log_BF)) %>% 
+  rename(BF = log_BF) %>% 
+  mutate(BF = exp(BF)) %>% 
+  mutate_if(is.double, ~ round(., 2)) %>% 
+  mutate(Parameter = str_remove_all(Parameter, "Water ")) %>% 
+  reactable(., theme = fivethirtyeight(),
+            filterable = FALSE,
+            resizable = TRUE,
+            pagination = FALSE,
+            wrap = TRUE,
+            searchable = FALSE,
+            defaultPageSize = 20,
+             showSortable = TRUE,
+            columns = list(
+            BF = colDef(
+              #cell = #function(value) {
+#                if (value > 1) paste0("+", value) 
+#                else value
+#                },
+              style = function(value) {
+                color <- if (value > 1) {
+                  "#008000"
+                  } else if (value < 1) {
+                    "#e00000"
+                  }
+                list(fontWeight = 600, color = color)}),
+#            BF = colDef(align = "center",
+#                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
+#                                                         "red"))),
+            Parameter = colDef(align = "center", filterable = TRUE,
+                                cell = data_bars_pos_neg(., 
+                                                         colors = c("#ff3030", "#1e90ff"))))) %>% 
+  add_title("Table 6. Treatment contrasts for % driftable fines < 200. Bayes Factor is used to test contrast hypothesis", font_size = 15)
+```
+
+
+
+
+The treatment contrasts of inswath spray solution deposition are compared (Table 2). See the BF and make an interpretation based on Table 1. 
+
+$$\\[0.1in]$$
+
+```{r}
+read_csv("data/inswath_bf.csv") %>%
+  mutate(Parameter = str_remove_all(Parameter, "\\(|\\)")) %>% 
+  mutate(log_BF = as.double(log_BF)) %>% 
+  rename(BF = log_BF) %>% 
+  mutate(BF = exp(BF)) %>% 
+  mutate_if(is.double, ~ round(., 2)) %>% 
+  reactable(., theme = fivethirtyeight(),
+            filterable = FALSE,
+            resizable = TRUE,
+            pagination = FALSE,
+            wrap = TRUE,
+#            groupBy = "Level1",
+            searchable = FALSE,
+            defaultPageSize = 20,
+            showSortable = TRUE,
+            columns = list(
+            BF = colDef(
+              #cell = #function(value) {
+#                if (value > 1) paste0("+", value) 
+#                else value
+#                },
+              style = function(value) {
+                color <- if (value > 1) {
+                  "#008000"
+                  } else if (value < 1) {
+                    "#e00000"
+                  }
+                list(fontWeight = 600, color = color)}),
+            Parameter = colDef(align = "center", filterable = TRUE, 
+                                cell = data_bars_pos_neg(., 
+                                                         colors = c("#ff3030", "#1e90ff"))))) %>% 
+  add_title("Table 7. Treatment contrasts for in-swath spray solution deposition. Bayes Factor is used to test contrast hypothesis", font_size = 15)
+```
+
+
 
 $$\\[0.1in]$$
 The treatment contrasts of Area Under the Curve are compared (Table 3). See the BF and make an interpretation based on Table 1.
@@ -86,22 +289,20 @@ $$\\[0.1in]$$
 
 ```{r}
 read_csv("data/auc_bf.csv") %>% 
-  mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
-  mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 
-  dplyr::select(-"Std_Difference") %>% 
-  mutate_if(is.double, ~round(.,2)) %>% 
+  mutate(Parameter = str_remove_all(Parameter, "\\(|\\)")) %>% 
+  mutate(log_BF = as.double(log_BF)) %>% 
+  mutate_if(is.double, ~ round(., 2)) %>% 
+  rename(BF = log_BF) %>% 
+  mutate(BF = exp(BF)) %>% 
   reactable(., theme = fivethirtyeight(),
             filterable = FALSE,
             resizable = TRUE,
             pagination = FALSE,
             wrap = TRUE,
-            groupBy = "Level1",
             searchable = FALSE,
             defaultPageSize = 20,
              showSortable = TRUE,
             columns = list(
-            Level1 = colDef(filterable = TRUE),
-            Level2 = colDef(filterable = TRUE),
             BF = colDef(
               #cell = #function(value) {
 #                if (value > 1) paste0("+", value) 
@@ -117,134 +318,20 @@ read_csv("data/auc_bf.csv") %>%
 #            BF = colDef(align = "center",
 #                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
 #                                                         "red"))),
-            Difference = colDef(align = "center", 
+            Parameter = colDef(align = "center", filterable = TRUE,
                                 cell = data_bars_pos_neg(., 
                                                          colors = c("#ff3030", "#1e90ff"))))) %>% 
-  add_title("Table 3. Treatment contrasts for Area Under the Curve. Bayes Factor is used to test contrast hypothesis", font_size = 15)
+  add_title("Table 8. Treatment contrasts for Area Under the Curve. Bayes Factor is used to test contrast hypothesis", font_size = 15)
 ```
 
 
 
 
-```{r}
-read_csv("data/bf_dv10.csv") %>% 
-  mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
-  mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 
-  dplyr::select(-"Std_Difference") %>% 
-  mutate_if(is.double, ~round(.,2)) %>% 
-  reactable(., theme = fivethirtyeight(),
-            filterable = FALSE,
-            resizable = TRUE,
-            pagination = FALSE,
-            wrap = TRUE,
-            groupBy = "Level1",
-            searchable = FALSE,
-            defaultPageSize = 20,
-             showSortable = TRUE,
-            columns = list(
-            Level1 = colDef(filterable = TRUE),
-            Level2 = colDef(filterable = TRUE),
-            BF = colDef(
-              #cell = #function(value) {
-#                if (value > 1) paste0("+", value) 
-#                else value
-#                },
-              style = function(value) {
-                color <- if (value > 1) {
-                  "#008000"
-                  } else if (value < 1) {
-                    "#e00000"
-                  }
-                list(fontWeight = 600, color = color)}),
-#            BF = colDef(align = "center",
-#                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
-#                                                         "red"))),
-            Difference = colDef(align = "center", 
-                                cell = data_bars_pos_neg(., 
-                                                         colors = c("#ff3030", "#1e90ff"))))) %>% 
-  add_title("Table 3. Treatment contrasts for DV10. Bayes Factor is used to test contrast hypothesis", font_size = 15)
-```
-
-
-```{r}
-read_csv("data/bf_dv50.csv") %>% 
-  mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
-  mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 
-  dplyr::select(-"Std_Difference") %>% 
-  mutate_if(is.double, ~round(.,2)) %>% 
-  reactable(., theme = fivethirtyeight(),
-            filterable = FALSE,
-            resizable = TRUE,
-            pagination = FALSE,
-            wrap = TRUE,
-            groupBy = "Level1",
-            searchable = FALSE,
-            defaultPageSize = 20,
-             showSortable = TRUE,
-            columns = list(
-            Level1 = colDef(filterable = TRUE),
-            Level2 = colDef(filterable = TRUE),
-            BF = colDef(
-              #cell = #function(value) {
-#                if (value > 1) paste0("+", value) 
-#                else value
-#                },
-              style = function(value) {
-                color <- if (value > 1) {
-                  "#008000"
-                  } else if (value < 1) {
-                    "#e00000"
-                  }
-                list(fontWeight = 600, color = color)}),
-#            BF = colDef(align = "center",
-#                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
-#                                                         "red"))),
-            Difference = colDef(align = "center", 
-                                cell = data_bars_pos_neg(., 
-                                                         colors = c("#ff3030", "#1e90ff"))))) %>% 
-  add_title("Table 4. Treatment contrasts for DV50. Bayes Factor is used to test contrast hypothesis", font_size = 15)
-```
 
 
 
-```{r}
-read_csv("data/bf_dv90.csv") %>% 
-  mutate_if(is_character, ~str_replace(., "[)]", "")) %>% 
-  mutate_if(is_character, ~str_replace(., "[(]", "")) %>% 
-  dplyr::select(-"Std_Difference") %>% 
-  mutate_if(is.double, ~round(.,2)) %>% 
-  reactable(., theme = fivethirtyeight(),
-            filterable = FALSE,
-            resizable = TRUE,
-            pagination = FALSE,
-            wrap = TRUE,
-            groupBy = "Level1",
-            searchable = FALSE,
-            defaultPageSize = 20,
-             showSortable = TRUE,
-            columns = list(
-            Level1 = colDef(filterable = TRUE),
-            Level2 = colDef(filterable = TRUE),
-            BF = colDef(
-              #cell = #function(value) {
-#                if (value > 1) paste0("+", value) 
-#                else value
-#                },
-              style = function(value) {
-                color <- if (value > 1) {
-                  "#008000"
-                  } else if (value < 1) {
-                    "#e00000"
-                  }
-                list(fontWeight = 600, color = color)}),
-#            BF = colDef(align = "center",
-#                        cell = color_tiles(., colors = ifelse(. > 1.00, "blue",
-#                                                         "red"))),
-            Difference = colDef(align = "center", 
-                                cell = data_bars_pos_neg(., 
-                                                         colors = c("#ff3030", "#1e90ff"))))) %>% 
-  add_title("Table 5. Treatment contrasts for DV90. Bayes Factor is used to test contrast hypothesis", font_size = 15)
-```
+
+
 
 #### Reference
 
