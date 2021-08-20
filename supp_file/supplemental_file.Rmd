@@ -1,0 +1,308 @@
+---
+title: "Hooded broadcast sprayer for particle drift reduction"
+subtitle: "Supplemental File"
+output: hrbrthemes::ipsum_pdf
+---
+
+
+This is a supplemental material for the manuscript entitled: "Hooded broadcast sprayer for particle drift reduction" authored by Bruno C. Vieira^1^, Maxwel Coura Oliveira^1^, Guilherme Souza Alves^2^, Jeffrey A. Golus^2^, Kasey Schroeder^2^, Reid J. Smeda^3^, Ryan J. Rector^4^, Greg R. Kruger^2^, Rodrigo Werle^1^.
+
+^1^ Department of Agronomy, University of Wisconsin–Madison, Madison, WI, USA  
+^2^ West Central Research and Extension Center, University of Nebraska-Lincoln, North Platte, NE, USA  
+^3^ Plant Science Division, University of Missouri, Columbia, MO, USA  
+^4^ Bayer Crop Science, St. Louis, MO, USA  
+
+Author for correspondence:  
+Rodrigo Werle, Department of Agronomy, University of Wisconsin–Madison, Madison, WI, USA. E-mail: rwerle@wisc.edu
+
+
+
+
+## Bayes Factor
+
+The Bayes Factor (BF) interpretation is based on Lee and Wagenmakers (2014). The H~0~ and H~1~ mean that treatments are the same (null hypothesis) or different, respectively.
+
+
+Table 1. Bayes Factor interpretation
+
+| Bayes Factor  | Interpretation               	|
+|--------------	|------------------------------	|
+| > 100        	| Extreme evidence for H~1~     	|
+| 30 – 100     	| Very strong evidence for H~1~ 	|
+| 10 – 30      	| Strong evidence for H~1~      	|
+| 3 – 10       	| Moderate evidence for H~1~    	|
+| 1 – 3        	| Anecdotal evidence for H~0~    	|
+| 1            	| No evidence                  	|
+| 1/3 – 1      	| Anecdotal evidence for H~0~   	|
+| 1/3 – 1/10   	| Moderate evidence for H~0~    	|
+| 1/10 – 1/30  	| Strong evidence for H~0~      	|
+| 1/30 – 1/100 	| Very strong evidence for H~0~ 	|
+| < 1/100      	| Extreme evidence for H~0~     	|
+
+## Tables
+
+The tables correspond the pairwise comparisons between treatments presented in the manuscript figures. Some pairwise comparisons (mean) are different from the actual values in the figures due to non-transformed data (logit scale) or rounding numbers.
+
+### Figure 3
+
+This section has the BF tables corresponding the Figure 3 in the manuscript.  
+
+Table  2. Treatment contrasts for D~V10~. Bayes Factor is used to test pairwise treatment contrasts. This table represents figure 3A in the manuscript
+
+|Parameter              |  Mean |   SD |         95% CI |     Bayes Factor
+|----------------------|-------|------|----------------|-------|
+DRA-AIXR vs AIXR  |  0.14 | 0.04 | [ 0.07,  0.21] |   4.11
+DRA-AIXR vs DRA-TTI     | -0.71 | 0.04 | [-0.79, -0.64] | > 1000
+DRA-AIXR vs TTI   | -0.49 | 0.04 | [-0.56, -0.41] | > 1000
+DRA-AIXR vs DRA-ULD     | -0.23 | 0.04 | [-0.30, -0.15] | 765.49
+DRA-AIXR vs ULD   |  0.10 | 0.04 | [ 0.03,  0.18] |  0.115
+AIXR vs DRA-TTI   | -0.86 | 0.04 | [-0.93, -0.79] | > 1000
+AIXR vs TTI | -0.63 | 0.04 | [-0.71, -0.56] | > 1000
+AIXR vs DRA-ULD   | -0.37 | 0.04 | [-0.45, -0.30] | 224.41
+AIXR vs ULD | -0.04 | 0.04 | [-0.11,  0.03] |  0.009
+DRA-TTI vs TTI    |  0.23 | 0.04 | [ 0.16,  0.30] |  90.53
+DRA-TTI vs DRA-ULD      |  0.49 | 0.04 | [ 0.41,  0.56] | > 1000
+DRA-TTI vs ULD    |  0.82 | 0.04 | [ 0.74,  0.89] | > 1000
+TTI vs DRA-ULD    |  0.26 | 0.04 | [ 0.19,  0.34] | 265.14
+TTI vs ULD  |  0.59 | 0.04 | [ 0.52,  0.67] | > 1000
+DRA-ULD vs ULD    |  0.33 | 0.04 | [ 0.25,  0.40] | > 1000
+
+
+Table  3. Treatment contrasts for D~V50~. Bayes Factor is used to test pairwise treatment contrasts. This table represents figure 3A in the manuscript
+
+Parameter              |  Mean |   SD |         95% CI |     BF
+-----------------------|-------|------|----------------|-------|
+DRA-AIXR vs DRA-TTI     | -0.60 | 0.04 | [-0.67, -0.53] | > 1000
+DRA-AIXR vs DRA-ULD     | -0.19 | 0.04 | [-0.26, -0.12] | 102.08
+DRA-AIXR vs AIXR  |  0.19 | 0.04 | [ 0.12,  0.26] |  34.92
+DRA-AIXR vs TTI   | -0.42 | 0.04 | [-0.49, -0.34] | > 1000
+DRA-AIXR vs ULD   |  0.14 | 0.04 | [ 0.06,  0.21] |  0.451
+DRA-TTI vs DRA-ULD      |  0.41 | 0.04 | [ 0.33,  0.48] | > 1000
+DRA-TTI vs AIXR   |  0.79 | 0.04 | [ 0.72,  0.86] | > 1000
+DRA-TTI vs TTI    |  0.18 | 0.04 | [ 0.11,  0.26] |  12.54
+DRA-TTI vs ULD    |  0.74 | 0.04 | [ 0.66,  0.80] | > 1000
+DRA-ULD vs AIXR   |  0.38 | 0.04 | [ 0.31,  0.45] | > 1000
+DRA-ULD vs TTI    | -0.22 | 0.04 | [-0.30, -0.15] |  29.85
+DRA-ULD vs ULD    |  0.33 | 0.04 | [ 0.26,  0.40] | > 1000
+AIXR vs TTI | -0.60 | 0.04 | [-0.67, -0.53] | > 1000
+AIXR vs ULD | -0.05 | 0.04 | [-0.13,  0.02] |  0.011
+TTI vs ULD  |  0.55 | 0.04 | [ 0.48,  0.62] | > 1000
+
+
+Table 4. Treatment contrasts for D~V90~. Bayes Factor is used to test pairwise treatment contrasts. This table represents figure 3A in the manuscript
+
+Parameter              |  Mean |   SD |         95% CI |     BF
+-----------------------|-------|------|----------------|-------|
+DRA-AIXR vs DRA-TTI     | -0.51 | 0.04 | [-0.59, -0.44] | > 1000
+DRA-AIXR vs DRA-ULD     | -0.16 | 0.04 | [-0.23, -0.09] |   5.25
+DRA-AIXR vs AIXR  |  0.24 | 0.04 | [ 0.17,  0.32] | > 1000
+DRA-AIXR vs TTI   | -0.34 | 0.04 | [-0.41, -0.26] | > 1000
+DRA-AIXR vs ULD   |  0.09 | 0.04 | [ 0.02,  0.17] |  0.049
+DRA-TTI vs DRA-ULD      |  0.35 | 0.04 | [ 0.27,  0.42] | > 1000
+DRA-TTI vs AIXR   |  0.75 | 0.04 | [ 0.68,  0.83] | > 1000
+DRA-TTI vs TTI    |  0.17 | 0.04 | [ 0.10,  0.25] |   4.42
+DRA-TTI vs ULD    |  0.60 | 0.04 | [ 0.53,  0.67] | > 1000
+DRA-ULD vs AIXR   |  0.40 | 0.04 | [ 0.33,  0.47] | > 1000
+DRA-ULD vs TTI    | -0.18 | 0.04 | [-0.24, -0.10] |   4.14
+DRA-ULD vs ULD    |  0.25 | 0.04 | [ 0.17,  0.32] | 101.19
+AIXR vs TTI | -0.58 | 0.04 | [-0.66, -0.51] | > 1000
+AIXR vs ULD | -0.15 | 0.04 | [-0.23, -0.08] |   1.30
+TTI vs ULD  |  0.43 | 0.04 | [ 0.36,  0.50] | > 1000
+
+
+Table 5. Treatment contrasts for relative span. Bayes Factor is used to test pairwise treatment contrasts. This table represents figure 3B in the manuscript
+
+Parameter              |  Mean |   SD |         95% CI |    BF
+-----------------------|-------|------|----------------|-------|
+DRA-AIXR vs DRA-TTI     |  0.20 | 0.04 | [ 0.13,  0.27] | 26.20
+DRA-AIXR vs DRA-ULD     |  0.07 | 0.04 | [ 0.00,  0.14] | 0.009
+DRA-AIXR vs AIXR  |  0.11 | 0.04 | [ 0.04,  0.19] | 0.579
+DRA-AIXR vs TTI   |  0.15 | 0.04 | [ 0.09,  0.23] | 0.434
+DRA-AIXR vs ULD   | -0.05 | 0.04 | [-0.12,  0.02] | 0.001
+DRA-TTI vs DRA-ULD      | -0.14 | 0.04 | [-0.20, -0.06] | 0.154
+DRA-TTI vs AIXR   | -0.09 | 0.04 | [-0.16, -0.02] | 0.036
+DRA-TTI vs TTI    | -0.05 | 0.04 | [-0.12,  0.02] | 0.011
+DRA-TTI vs ULD    | -0.25 | 0.04 | [-0.32, -0.18] | 32.47
+DRA-ULD vs AIXR   |  0.04 | 0.04 | [-0.03,  0.12] | 0.002
+DRA-ULD vs TTI    |  0.09 | 0.04 | [ 0.01,  0.16] | 0.005
+DRA-ULD vs ULD    | -0.11 | 0.04 | [-0.18, -0.04] | 0.329
+AIXR vs TTI |  0.04 | 0.04 | [-0.03,  0.12] | 0.005
+AIXR vs ULD | -0.16 | 0.04 | [-0.23, -0.08] | 0.569
+TTI vs ULD  | -0.20 | 0.04 | [-0.27, -0.12] |  1.92
+
+
+Table 6. Treatment contrasts for % driftable fines < 200 µm. Bayes Factor is used to test pairwise treatment contrasts. This table represents figure 3C in the manuscript
+
+Parameter              |  Mean |   SD |         95% CI |     BF
+-----------------------|-------|------|----------------|-------|
+DRA-AIXR vs DRA-TTI     |  2.38 | 0.33 | [ 1.74,  3.03] | > 1000
+DRA-AIXR vs DRA-ULD     |  0.66 | 0.19 | [ 0.26,  1.00] |   2.72
+DRA-AIXR vs AIXR  | -0.45 | 0.14 | [-0.75, -0.19] |   3.53
+DRA-AIXR vs TTI   |  1.57 | 0.26 | [ 1.07,  2.09] |  89.16
+DRA-AIXR vs ULD   | -0.27 | 0.15 | [-0.59,  0.02] |  0.015
+DRA-TTI vs DRA-ULD      | -1.73 | 0.35 | [-2.40, -1.05] |  34.33
+DRA-TTI vs AIXR   | -2.83 | 0.33 | [-3.45, -2.18] | > 1000
+DRA-TTI vs TTI    | -0.81 | 0.36 | [-1.52, -0.09] |  0.404
+DRA-TTI vs ULD    | -2.66 | 0.32 | [-3.25, -1.97] | > 1000
+DRA-ULD vs AIXR   | -1.10 | 0.18 | [-1.44, -0.73] | 865.69
+DRA-ULD vs TTI    |  0.91 | 0.28 | [ 0.40,  1.48] |  0.598
+DRA-ULD vs ULD    | -0.93 | 0.18 | [-1.29, -0.58] | 390.26
+AIXR vs TTI |  2.01 | 0.25 | [ 1.55,  2.54] | > 1000
+AIXR vs ULD |  0.17 | 0.13 | [-0.09,  0.44] |  0.008
+TTI vs ULD  | -1.84 | 0.25 | [-2.34, -1.37] | > 1000
+
+
+### Figure 4
+
+This section has the BF tables corresponding the Figure 4 in the manuscript.  
+
+Table 7. Treatment contrasts for spray droplet deposition in-swath. Bayes Factor is used to test pairwise treatment contrasts. This table represents figure 4 in the manuscript
+
+Parameter                         |    Mean |    SD |             95% CI |     BF
+----------------------------------|--------|------|------------------|-------|
+DRA-Hood-AIXR vs DRA-Hood-TTI  |   -1.44 | 21.01 | [ -45.09,   45.07] |  0.794
+DRA-Hood-AIXR vs DRA-Hood-ULD  |  -15.97 | 27.44 | [ -85.43,   24.72] |  0.754
+DRA-Hood-AIXR vs DRA-Open-AIXR | -215.26 | 44.73 | [-298.79, -123.68] | > 1000
+DRA-Hood-AIXR vs DRA-Open-TTI  | -186.40 | 46.99 | [-277.66,  -93.77] | 634.87
+DRA-Hood-AIXR vs DRA-Open-ULD  | -325.08 | 44.87 | [-413.96, -239.35] | > 1000
+DRA-Hood-AIXR vs Hood-AIXR     |   -5.27 | 25.44 | [ -64.64,   50.17] |  0.758
+DRA-Hood-AIXR vs Hood-TTI      | -156.91 | 61.20 | [-265.01,  -16.18] |  14.74
+DRA-Hood-AIXR vs Hood-ULD      |  -91.58 | 62.35 | [-201.17,    9.32] |   2.33
+DRA-Hood-AIXR vs Open-AIXR     |   39.76 | 49.63 | [ -24.16,  145.93] |   1.24
+DRA-Hood-AIXR vs Open-TTI      |   26.24 | 41.40 | [ -27.06,  126.79] |  0.466
+DRA-Hood-AIXR vs Open-ULD      |   84.50 | 61.48 | [ -12.00,  194.84] |   2.76
+DRA-Hood-TTI vs DRA-Hood-ULD   |  -14.53 | 31.54 | [ -86.24,   42.22] |  0.582
+DRA-Hood-TTI vs DRA-Open-AIXR  | -213.82 | 44.48 | [-297.30, -126.39] | > 1000
+DRA-Hood-TTI vs DRA-Open-TTI   | -184.96 | 46.84 | [-280.66,  -97.81] | 826.26
+DRA-Hood-TTI vs DRA-Open-ULD   | -323.64 | 45.12 | [-411.79, -237.53] | > 1000
+DRA-Hood-TTI vs Hood-AIXR      |   -3.83 | 30.80 | [ -68.17,   59.57] |  0.558
+DRA-Hood-TTI vs Hood-TTI       | -155.47 | 60.45 | [-271.17,  -25.40] |  15.50
+DRA-Hood-TTI vs Hood-ULD       |  -90.14 | 61.48 | [-203.15,   18.42] |   2.23
+DRA-Hood-TTI vs Open-AIXR      |   41.20 | 49.76 | [ -32.65,  150.27] |  0.862
+DRA-Hood-TTI vs Open-TTI       |   27.68 | 43.17 | [ -51.08,  121.26] |  0.411
+DRA-Hood-TTI vs Open-ULD       |   85.94 | 60.36 | [ -15.99,  199.57] |   2.16
+DRA-Hood-ULD vs DRA-Open-AIXR  | -199.29 | 46.68 | [-286.98, -106.17] | 880.98
+DRA-Hood-ULD vs DRA-Open-TTI   | -170.43 | 48.45 | [-270.63,  -81.11] | 219.31
+DRA-Hood-ULD vs DRA-Open-ULD   | -309.11 | 47.02 | [-400.98, -216.78] | > 1000
+DRA-Hood-ULD vs Hood-AIXR      |   10.70 | 34.60 | [ -55.47,   91.69] |  0.622
+DRA-Hood-ULD vs Hood-TTI       | -140.94 | 61.83 | [-254.13,   -8.62] |  11.30
+DRA-Hood-ULD vs Hood-ULD       |  -75.61 | 61.82 | [-197.84,   27.93] |   1.47
+DRA-Hood-ULD vs Open-AIXR      |   55.73 | 51.24 | [ -24.48,  159.61] |   1.39
+DRA-Hood-ULD vs Open-TTI       |   42.21 | 45.78 | [ -27.83,  140.73] |  0.530
+DRA-Hood-ULD vs Open-ULD       |  100.47 | 61.30 | [ -12.54,  210.22] |   3.26
+DRA-Open-AIXR vs DRA-Open-TTI  |   28.86 | 53.19 | [ -70.04,  137.77] |   1.29
+DRA-Open-AIXR vs DRA-Open-ULD  | -109.82 | 52.36 | [-215.70,   -9.56] |  11.11
+DRA-Open-AIXR vs Hood-AIXR     |  209.99 | 47.84 | [ 112.79,  298.86] | > 1000
+DRA-Open-AIXR vs Hood-TTI      |   58.36 | 63.51 | [ -56.37,  189.54] |   2.10
+DRA-Open-AIXR vs Hood-ULD      |  123.69 | 63.17 | [  -0.92,  242.85] |   9.00
+DRA-Open-AIXR vs Open-AIXR     |  255.03 | 56.19 | [ 148.51,  368.25] | > 1000
+DRA-Open-AIXR vs Open-TTI      |  241.50 | 51.29 | [ 142.56,  343.39] | > 1000
+DRA-Open-AIXR vs Open-ULD      |  299.77 | 63.04 | [ 180.75,  420.52] | > 1000
+DRA-Open-TTI vs DRA-Open-ULD   | -138.68 | 52.65 | [-248.46,  -39.66] |  47.27
+DRA-Open-TTI vs Hood-AIXR      |  181.13 | 49.42 | [  77.25,  272.71] | 310.87
+DRA-Open-TTI vs Hood-TTI       |   29.50 | 63.67 | [ -85.35,  166.03] |   1.24
+DRA-Open-TTI vs Hood-ULD       |   94.82 | 64.25 | [ -30.23,  212.72] | > 1000
+DRA-Open-TTI vs Open-AIXR      |  226.16 | 57.98 | [ 119.40,  347.49] | > 1000
+DRA-Open-TTI vs Open-TTI       |  212.64 | 53.25 | [ 111.92,  319.67] | 827.50
+DRA-Open-TTI vs Open-ULD       |  270.91 | 66.16 | [ 144.87,  392.34] | > 1000
+DRA-Open-ULD vs Hood-AIXR      |  319.81 | 47.51 | [ 223.23,  407.05] | > 1000
+DRA-Open-ULD vs Hood-TTI       |  168.17 | 63.27 | [  40.86,  289.99] |  51.22
+DRA-Open-ULD vs Hood-ULD       |  233.50 | 63.76 | [ 113.05,  353.87] | 534.21
+DRA-Open-ULD vs Open-AIXR      |  364.84 | 55.84 | [ 262.96,  480.54] | > 1000
+DRA-Open-ULD vs Open-TTI       |  351.32 | 52.07 | [ 245.37,  449.40] | > 1000
+DRA-Open-ULD vs Open-ULD       |  409.58 | 65.10 | [ 292.63,  537.36] | > 1000
+Hood-AIXR vs Hood-TTI          | -151.63 | 61.89 | [-263.92,  -15.08] |  11.29
+Hood-AIXR vs Hood-ULD          |  -86.31 | 63.67 | [-205.70,   23.84] |   2.14
+Hood-AIXR vs Open-AIXR         |   45.04 | 51.35 | [ -30.75,  158.70] |   1.09
+Hood-AIXR vs Open-TTI          |   31.51 | 45.30 | [ -39.51,  139.25] |  0.527
+Hood-AIXR vs Open-ULD          |   89.78 | 62.35 | [ -18.03,  211.02] |   2.41
+Hood-TTI vs Hood-ULD           |   65.33 | 73.15 | [ -73.07,  207.01] |   1.86
+Hood-TTI vs Open-AIXR          |  196.67 | 67.69 | [  63.51,  329.08] |  54.93
+Hood-TTI vs Open-TTI           |  183.15 | 65.15 | [  51.22,  309.26] |  35.40
+Hood-TTI vs Open-ULD           |  241.41 | 73.13 | [ 100.86,  383.13] | 386.49
+Hood-ULD vs Open-AIXR          |  131.34 | 68.67 | [  -8.10,  250.92] |   7.11
+Hood-ULD vs Open-TTI           |  117.82 | 65.76 | [  -7.88,  236.05] |   2.80
+Hood-ULD vs Open-ULD           |  176.08 | 73.82 | [  27.35,  314.48] |  30.00
+Open-AIXR vs Open-TTI          |  -13.52 | 57.10 | [-136.83,   98.28] |  0.591
+Open-AIXR vs Open-ULD          |   44.74 | 65.02 | [ -81.47,  172.33] |   1.49
+Open-TTI vs Open-ULD           |   58.27 | 65.17 | [ -57.33,  188.38] |  0.826
+
+### Figure 6
+
+This section has the BF tables corresponding the Figure 6 in the manuscript.  
+
+Table 8. Treatment contrasts for area under the curve. Bayes Factor is used to test pairwise treatment contrasts. This table represents the figure 6B in the manuscript
+
+Parameter                         |   Mean |   SD |           95% CI |     BF
+----------------------------------|--------|------|------------------|-------|
+DRA-Hood-AIXR vs DRA-Hood-TTI  |   8.15 | 6.47 | [ -3.91,  21.29] |  0.605
+DRA-Hood-AIXR vs DRA-Hood-ULD  |   7.57 | 6.32 | [ -3.75,  20.51] |  0.615
+DRA-Hood-AIXR vs DRA-Open-AIXR | -50.83 | 6.61 | [-63.81, -38.02] | > 1000
+DRA-Hood-AIXR vs DRA-Open-TTI  |  -5.98 | 5.50 | [-16.38,   5.44] |  0.474
+DRA-Hood-AIXR vs DRA-Open-ULD  | -11.53 | 6.20 | [-23.68,   0.16] |   1.61
+DRA-Hood-AIXR vs Hood-AIXR     |  -9.79 | 6.92 | [-23.85,   2.94] |  0.930
+DRA-Hood-AIXR vs Hood-TTI      |  -5.56 | 6.35 | [-18.71,   6.73] |  0.391
+DRA-Hood-AIXR vs Hood-ULD      |  -9.20 | 6.83 | [-23.31,   3.17] |  0.983
+DRA-Hood-AIXR vs Open-AIXR     | -65.79 | 7.87 | [-81.46, -50.03] | > 1000
+DRA-Hood-AIXR vs Open-TTI      | -18.55 | 7.86 | [-34.12,  -4.28] |  12.59
+DRA-Hood-AIXR vs Open-ULD      | -51.21 | 7.94 | [-67.21, -35.70] | > 1000
+DRA-Hood-TTI vs DRA-Hood-ULD   |  -0.58 | 7.26 | [-15.42,  13.16] |  0.166
+DRA-Hood-TTI vs DRA-Open-AIXR  | -58.98 | 7.30 | [-74.22, -45.43] | > 1000
+DRA-Hood-TTI vs DRA-Open-TTI   | -14.13 | 6.97 | [-27.64,  -0.10] |   1.31
+DRA-Hood-TTI vs DRA-Open-ULD   | -19.68 | 7.30 | [-33.93,  -5.44] |   4.21
+DRA-Hood-TTI vs Hood-AIXR      | -17.94 | 8.03 | [-33.99,  -2.33] |   2.41
+DRA-Hood-TTI vs Hood-TTI       | -13.71 | 7.82 | [-29.19,   1.04] |  0.735
+DRA-Hood-TTI vs Hood-ULD       | -17.35 | 8.05 | [-32.54,  -1.96] |   2.38
+DRA-Hood-TTI vs Open-AIXR      | -73.94 | 8.58 | [-91.43, -57.94] | > 1000
+DRA-Hood-TTI vs Open-TTI       | -26.70 | 8.59 | [-42.28,  -8.55] |  26.84
+DRA-Hood-TTI vs Open-ULD       | -59.36 | 8.59 | [-75.66, -42.26] | > 1000
+DRA-Hood-ULD vs DRA-Open-AIXR  | -58.39 | 7.34 | [-72.77, -44.18] | > 1000
+DRA-Hood-ULD vs DRA-Open-TTI   | -13.55 | 6.82 | [-26.48,  -0.18] |  0.895
+DRA-Hood-ULD vs DRA-Open-ULD   | -19.10 | 7.07 | [-32.45,  -4.60] |   5.92
+DRA-Hood-ULD vs Hood-AIXR      | -17.36 | 7.88 | [-31.87,  -1.27] |   2.12
+DRA-Hood-ULD vs Hood-TTI       | -13.13 | 7.88 | [-29.07,   1.88] |  0.655
+DRA-Hood-ULD vs Hood-ULD       | -16.77 | 7.76 | [-30.91,  -1.26] |   2.30
+DRA-Hood-ULD vs Open-AIXR      | -73.36 | 8.35 | [-89.24, -56.45] | > 1000
+DRA-Hood-ULD vs Open-TTI       | -26.12 | 8.59 | [-43.46,  -9.26] |  16.34
+DRA-Hood-ULD vs Open-ULD       | -58.77 | 8.54 | [-75.85, -42.42] | > 1000
+DRA-Open-AIXR vs DRA-Open-TTI  |  44.85 | 6.97 | [ 31.76,  58.69] | > 1000
+DRA-Open-AIXR vs DRA-Open-ULD  |  39.29 | 7.34 | [ 24.12,  52.80] | > 1000
+DRA-Open-AIXR vs Hood-AIXR     |  41.04 | 8.09 | [ 23.42,  55.34] | 845.05
+DRA-Open-AIXR vs Hood-TTI      |  45.27 | 7.96 | [ 27.69,  59.61] | > 1000
+DRA-Open-AIXR vs Hood-ULD      |  41.63 | 8.05 | [ 25.89,  57.11] | > 1000
+DRA-Open-AIXR vs Open-AIXR     | -14.96 | 8.59 | [-32.79,   1.12] |  0.649
+DRA-Open-AIXR vs Open-TTI      |  32.28 | 8.50 | [ 15.33,  48.67] |  69.52
+DRA-Open-AIXR vs Open-ULD      |  -0.38 | 8.55 | [-16.80,  16.74] |  0.157
+DRA-Open-TTI vs DRA-Open-ULD   |  -5.55 | 6.68 | [-18.11,   7.89] |  0.178
+DRA-Open-TTI vs Hood-AIXR      |  -3.81 | 7.57 | [-19.14,   9.92] |  0.137
+DRA-Open-TTI vs Hood-TTI       |   0.42 | 7.45 | [-14.04,  15.26] |  0.136
+DRA-Open-TTI vs Hood-ULD       |  -3.22 | 7.65 | [-18.74,  11.49] |  0.216
+DRA-Open-TTI vs Open-AIXR      | -59.81 | 8.37 | [-76.17, -42.91] | > 1000
+DRA-Open-TTI vs Open-TTI       | -12.57 | 8.31 | [-28.57,   3.39] |  0.493
+DRA-Open-TTI vs Open-ULD       | -45.23 | 8.43 | [-61.65, -29.14] | > 1000
+DRA-Open-ULD vs Hood-AIXR      |   1.74 | 7.82 | [-13.25,  17.00] |  0.167
+DRA-Open-ULD vs Hood-TTI       |   5.97 | 7.57 | [ -8.61,  20.91] |  0.198
+DRA-Open-ULD vs Hood-ULD       |   2.33 | 7.85 | [-12.58,  17.91] |  0.229
+DRA-Open-ULD vs Open-AIXR      | -54.26 | 8.55 | [-72.07, -38.83] | > 1000
+DRA-Open-ULD vs Open-TTI       |  -7.02 | 8.43 | [-23.39,   9.59] |  0.266
+DRA-Open-ULD vs Open-ULD       | -39.67 | 8.46 | [-56.13, -23.26] | 235.20
+Hood-AIXR vs Hood-TTI          |   4.23 | 8.11 | [-11.09,  20.13] |  0.143
+Hood-AIXR vs Hood-ULD          |   0.59 | 8.43 | [-16.42,  16.69] |  0.192
+Hood-AIXR vs Open-AIXR         | -56.00 | 9.17 | [-73.39, -38.37] | > 1000
+Hood-AIXR vs Open-TTI          |  -8.76 | 8.84 | [-25.93,   8.44] |  0.255
+Hood-AIXR vs Open-ULD          | -41.42 | 8.81 | [-58.48, -23.90] | 171.06
+Hood-TTI vs Hood-ULD           |  -3.64 | 8.24 | [-19.70,  12.48] |  0.204
+Hood-TTI vs Open-AIXR          | -60.23 | 8.74 | [-77.71, -43.38] | > 1000
+Hood-TTI vs Open-TTI           | -12.99 | 8.71 | [-30.18,   4.14] |  0.557
+Hood-TTI vs Open-ULD           | -45.65 | 8.69 | [-62.48, -28.60] | > 1000
+Hood-ULD vs Open-AIXR          | -56.59 | 8.98 | [-75.74, -40.10] | > 1000
+Hood-ULD vs Open-TTI           |  -9.35 | 9.05 | [-26.98,   8.48] |  0.443
+Hood-ULD vs Open-ULD           | -42.01 | 8.86 | [-59.38, -24.73] | 287.61
+Open-AIXR vs Open-TTI          |  47.24 | 9.29 | [ 28.97,  65.17] | > 1000
+Open-AIXR vs Open-ULD          |  14.59 | 9.29 | [ -2.80,  33.29] |  0.445
+Open-TTI vs Open-ULD           | -32.66 | 9.26 | [-49.69, -13.41] |  27.60
+
+
+## References
+
+- Lee M.D. and Wagenmakers E.J. (2014) Bayesian Cognitive Modeling: A Practical Course. Cambridge University Press. ISBN: 9781107018457, 1107018455
