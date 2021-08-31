@@ -129,6 +129,8 @@ group_diff <- pairs(groups)
 library(modelbased)
 estimate_contrasts(model1, test = "bf")
 ```
+
+
 ```{r}
 #https://easystats.github.io/blog/posts/bayestestr_emmeans/
 inswath_main <- pairs(emmeans(model1, ~ trt))
@@ -176,7 +178,7 @@ em %>% as_tibble() %>%
   ylim(0, 2000) +
   theme_few() +
   labs(x = NULL, 
-       y = expression(paste("Spray particle deposition (\u03B7L/cm"^"2",")"))
+       y = expression(paste("In-swath spray deposition  (\u03B7L/cm"^"2",")"))
        ) +
   theme(legend.position = "none",
         axis.title = element_text(size = 30),
@@ -572,21 +574,21 @@ fig2 %>%
   facet_wrap(~ trt, ncol = 3) +
   scale_shape_manual(values = c(16, 1)) + 
   theme_few() +
-  geom_text(data = loc, mapping = aes(x = 10, y = 20), 
-            label = "Intercept", inherit.aes = FALSE, size = 10) +
-  geom_text(data = loc, mapping = aes(x = 55, y = 10), 
-            label = "Slope", inherit.aes = FALSE, size = 10) +
+#  geom_text(data = loc, mapping = aes(x = 10, y = 20), 
+#            label = "Intercept", inherit.aes = FALSE, size = 10) +
+#  geom_text(data = loc, mapping = aes(x = 55, y = 10), 
+##            label = "Slope", inherit.aes = FALSE, size = 10) +
   geom_label(aes(label = formula), x = 30, y = 15, color = "white", size = 12) +
-  geom_curve(data = loc, mapping = aes(x = 25, y = 17,
-             xend = 20, yend = 20),
-             arrow = arrow(length = unit(0.07, "inch")), 
-             color = 1,
-             size = 0.4, curvature = 0.3, inherit.aes = FALSE) +
-  geom_curve(data = loc, mapping = aes(x = 42, y = 13,
-             xend = 47, yend = 10),
-             arrow = arrow(length = unit(0.07, "inch")), 
-             color = 1,
-             size = 0.4, curvature = 0.3, inherit.aes = FALSE) +
+#  geom_curve(data = loc, mapping = aes(x = 25, y = 17,
+#             xend = 20, yend = 20),
+#             arrow = arrow(length = unit(0.07, "inch")), 
+#             color = 1,
+#             size = 0.4, curvature = 0.3, inherit.aes = FALSE) +
+#  geom_curve(data = loc, mapping = aes(x = 42, y = 13,
+#             xend = 47, yend = 10),
+#             arrow = arrow(length = unit(0.07, "inch")), 
+#             color = 1,
+#             size = 0.4, curvature = 0.3, inherit.aes = FALSE) +
   labs(x = "Distance (m)", 
        y = expression(paste("Spray particle deposition (\u03b7L/cm"^"2",")"))) +
   theme(legend.position = "none",
@@ -717,8 +719,13 @@ epred3$emmeans %>% as_tibble() %>%
         legend.background = element_blank(),
         axis.title = element_markdown(size = 30),
         axis.text = element_markdown(size = 25)) -> figE
-figE
+#figE
+
+ggsave("Figure 3.png", width = 5, height = 4)
 ```
+
+
+
 ```{r}
 #https://easystats.github.io/blog/posts/bayestestr_emmeans/
 auc_main <- pairs(emmeans(auc_model, ~ trt))
@@ -731,6 +738,8 @@ describe_posterior(auc_main,
   tibble() -> auc_bf
 readr::write_csv(path = "../supp_file/data/auc_bf.csv", x = auc_bf)
 ```
+
+
 
 ```{r}
 #estimate_contrasts(auc_model, test = "bf") -> auc_bf
@@ -750,11 +759,11 @@ readr::write_csv(path = "../supp_file/data/auc_bf.csv", x = auc_bf)
 
 
 ```{r}
-c + figE +
-  plot_annotation(tag_levels = 'A') & 
-  theme(plot.tag = element_text(size = 35, hjust = 0, vjust = 0)) -> figU
+#c + figE +
+#  plot_annotation(tag_levels = 'A') & 
+#  theme(plot.tag = element_text(size = 35, hjust = 0, vjust = 0)) -> figU
 
-ggsave("Figure 3.png", width = 8, height = 4)
+#ggsave("Figure 3.png", width = 8, height = 4)
 ```
 
 

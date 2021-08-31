@@ -69,7 +69,7 @@ emmeans1 <- emmeans(model13, ~ nozzle * solution,
 
 ```{r}
 #https://easystats.github.io/blog/posts/bayestestr_emmeans/
-dv10_main <- pairs(emmeans(model13, ~ solution * nozzle))
+dv10_main <- pairs(emmeans(model13, ~ nozzle * solution))
 
 describe_posterior(dv10_main,
                    centrality = "mean", dispersion = TRUE,
