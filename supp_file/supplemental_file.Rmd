@@ -31,7 +31,7 @@ Table 1. Bayes Factor interpretation
 | 30 – 100     	| Very strong evidence for H~1~ 	|
 | 10 – 30      	| Strong evidence for H~1~      	|
 | 3 – 10       	| Moderate evidence for H~1~    	|
-| 1 – 3        	| Anecdotal evidence for H~0~    	|
+| 1 – 3        	| Anecdotal evidence for H~1~    	|
 | 1            	| No evidence                  	|
 | 1/3 – 1      	| Anecdotal evidence for H~0~   	|
 | 1/3 – 1/10   	| Moderate evidence for H~0~    	|
