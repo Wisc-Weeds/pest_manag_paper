@@ -386,7 +386,6 @@ params
 
 ```{r}
 params %>% 
-
   pivot_wider(id_cols = trt,
               names_from = "term", 
               values_from = "estimate") %>% 
@@ -548,6 +547,7 @@ label <- distance_final %>%
 ```
 
 ```{r}
+library(tidyverse)
 fig2 <- fig1 %>% 
   left_join(label)
 ```
