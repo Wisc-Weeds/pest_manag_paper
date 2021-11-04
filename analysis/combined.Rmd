@@ -391,7 +391,7 @@ params %>%
               values_from = "estimate") %>% 
   mutate(slope = - slope) -> distance_final
 ```
-
+ 
 ```{r}
 distance_function <- function(int, slope, y = 0) {
   distance = (y - int) / slope
